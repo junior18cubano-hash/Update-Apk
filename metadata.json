@@ -1,0 +1,6 @@
+{
+  "name": "Catálogo Joa",
+  "description": "Catálogo ✨Multiverso multimedia con funcionamiento offline y online como app nativa",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
