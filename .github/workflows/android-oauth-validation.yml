@@ -1,0 +1,58 @@
+name: Android OAuth static validation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, fix/google-oauth-pkce-external-browser]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-oauth:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check authentication JavaScript syntax
+        run: node --check app/src/main/assets/joa_supabase_auth.js
+
+      - name: Check Python patch script syntax
+        run: python -m py_compile scripts/patch_apk_auth.py scripts/patch_apk_version.py
+
+      - name: Validate Android manifest and OAuth deep link
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse("app/src/main/AndroidManifest.xml").getroot()
+          ns = {"android": "http://schemas.android.com/apk/res/android"}
+          found = False
+          for data in root.findall(".//data"):
+              if (data.get("{http://schemas.android.com/apk/res/android}scheme") == "joacatalogo"
+                  and data.get("{http://schemas.android.com/apk/res/android}host") == "auth"):
+                  found = True
+                  break
+          assert found, "Missing joacatalogo://auth intent filter"
+          print("Manifest XML valid; joacatalogo://auth is registered.")
+          PY
+
+      - name: Check OAuth PKCE and external-browser routing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          auth = Path("app/src/main/assets/joa_supabase_auth.js").read_text()
+          handler = Path("app/src/main/java/com/example/JoaAuthHandler.java").read_text()
+          assert 'flowType: "pkce"' in auth
+          assert "exchangeCodeForSession(code)" in auth
+          assert 'redirectTo: "joacatalogo://auth"' in auth
+          assert "isGoogleIdentityUrl(url)" in handler
+          assert "startActivity(intent)" in handler
+          print("PKCE exchange and external-browser callback routing checks passed.")
+          PY
