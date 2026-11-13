@@ -504,11 +504,9 @@
       });
       if (res.error) throw res.error;
       if (!res.data?.url) throw new Error("Google no devolvió la dirección de acceso.");
-      if (window.AndroidBridge && typeof window.AndroidBridge.openExternalAuthUrl === "function") {
-        window.AndroidBridge.openExternalAuthUrl(res.data.url);
-      } else {
-        window.location.href = res.data.url;
-      }
+      // En Android, JoaAuthHandler intercepta la navegación a Google y la abre
+      // en el navegador del sistema. En web, el navegador completa el mismo flujo.
+      window.location.href = res.data.url;
       showToast("Continúa el acceso en Google. Volverás a JOA automáticamente.");
     } catch (err) {
       console.error("JOA Google OAuth Error:", err);
