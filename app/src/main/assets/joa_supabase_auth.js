@@ -489,109 +489,34 @@
   window.handleJoaGoogleOAuth = async function(chooseAccount) {
     if (!supabase) supabase = initSupabase();
     var msgEl = document.getElementById("joaAuthMsg");
-    if (msgEl) msgEl.textContent = "Iniciando conexión con Google...";
-
+    var googleBtn = document.getElementById("joaGoogleAuthBtn");
+    if (!supabase) { showToast("No se pudo conectar con el servidor de autenticación."); return; }
     try {
-      var redirectUrl = window.JOA_CONFIG?.authRedirectUrl || "https://junior18cubano-hash.github.io/mi-catalogo/";
+      if (googleBtn) googleBtn.disabled = true;
+      if (msgEl) msgEl.textContent = "Abriendo el acceso seguro de Google...";
       var res = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: redirectUrl,
+          redirectTo: "joacatalogo://auth",
           skipBrowserRedirect: true,
           ...(chooseAccount ? { queryParams: { prompt: "select_account" } } : {})
         }
       });
       if (res.error) throw res.error;
       if (!res.data?.url) throw new Error("Google no devolvió la dirección de acceso.");
-
-      if (msgEl) {
-        msgEl.textContent = "Conectando con Google...";
+      if (window.AndroidBridge && typeof window.AndroidBridge.openExternalAuthUrl === "function") {
+        window.AndroidBridge.openExternalAuthUrl(res.data.url);
+      } else {
+        window.location.href = res.data.url;
       }
-      showToast("Cargando inicio de sesión de Google dentro de la aplicación...");
-
-      // Cargar la autenticación de Google DIRECTAMENTE en el WebView de la propia APK
-      window.location.href = res.data.url;
+      showToast("Continúa el acceso en Google. Volverás a JOA automáticamente.");
     } catch (err) {
       console.error("JOA Google OAuth Error:", err);
       var userMsg = formatAuthError(err);
       if (msgEl) msgEl.textContent = userMsg;
       showToast(userMsg);
-    }
-  };
-
-  /**
-   * Sincroniza la sesión de Google OAuth copiando el enlace de redirección del navegador
-   */
-  window.syncJoaOAuthSessionFromClipboard = async function() {
-    var msgEl = document.getElementById("joaAuthMsg");
-    if (!supabase) supabase = initSupabase();
-
-    try {
-      if (msgEl) msgEl.textContent = "Leyendo portapapeles...";
-      var text = "";
-      if (navigator.clipboard && navigator.clipboard.readText) {
-        text = await navigator.clipboard.readText();
-      } else {
-        text = prompt("Pega aquí el enlace completo de redirección del navegador:");
-      }
-
-      if (!text) {
-        if (msgEl) msgEl.textContent = "No se encontró texto en el portapapeles.";
-        showToast("Portapapeles vacío o sin permisos.");
-        return;
-      }
-
-      var accessToken = "";
-      var refreshToken = "";
-
-      if (text.indexOf("access_token=") !== -1) {
-        var hashIdx = text.indexOf("#");
-        var queryIdx = text.indexOf("?");
-        var searchPart = "";
-        if (hashIdx !== -1) searchPart = text.slice(hashIdx + 1);
-        else if (queryIdx !== -1) searchPart = text.slice(queryIdx + 1);
-        else searchPart = text;
-
-        var params = new URLSearchParams(searchPart);
-        accessToken = params.get("access_token");
-        refreshToken = params.get("refresh_token");
-      }
-
-      if (!accessToken && text.length > 50 && text.indexOf("eyJ") === 0) {
-        accessToken = text.trim();
-      }
-
-      if (!accessToken) {
-        throw new Error("El enlace copiado no contiene tokens de acceso válidos. Asegúrate de copiar la URL completa de redirección.");
-      }
-
-      if (msgEl) msgEl.textContent = "Estableciendo sesión en JOA...";
-      var sessionRes = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken || ""
-      });
-
-      if (sessionRes.error) throw sessionRes.error;
-
-      currentUser = sessionRes.data.user || sessionRes.data.session?.user;
-      currentSession = sessionRes.data.session;
-      window.joaCurrentUser = currentUser;
-      window.joaCurrentSession = currentSession;
-
-      if (currentUser) {
-        await ensureCommunityProfile(currentUser);
-        updateAuthUI();
-        window.closeJoaAuthModal();
-        showToast("¡Sesión con Google sincronizada con éxito!");
-      } else {
-        throw new Error("No se pudo obtener el usuario de la sesión.");
-      }
-
-    } catch (err) {
-      console.error("Sync OAuth Error:", err);
-      var userMsg = err.message || "Error al sincronizar la sesión.";
-      if (msgEl) msgEl.textContent = userMsg;
-      showToast(userMsg);
+    } finally {
+      if (googleBtn) googleBtn.disabled = false;
     }
   };
 
@@ -622,58 +547,64 @@
   /**
    * Manejador global para redirecciones de autenticación por Deep Link o WebView Interception
    */
+  var oauthCallbackInFlight = null;
+  var lastSuccessfulOAuthCallback = null;
+
   window.handleJoaAuthRedirect = async function(url) {
-    console.info("JOA Auth: Procesando redirección de autenticación por Deep Link / WebView:", url);
-    if (!url) return;
+    if (!url) return false;
+    if (lastSuccessfulOAuthCallback === url) return true;
+    if (oauthCallbackInFlight) return oauthCallbackInFlight;
     if (!supabase) supabase = initSupabase();
+    if (!supabase) return false;
 
-    try {
-      var accessToken = "";
-      var refreshToken = "";
+    oauthCallbackInFlight = (async function() {
+      try {
+        console.info("JOA Auth: Procesando callback OAuth:", url);
+        var parsed = new URL(url, window.location.href);
+        var queryParams = new URLSearchParams(parsed.search || "");
+        var hashParams = new URLSearchParams((parsed.hash || "").replace(/^#/, ""));
+        var code = queryParams.get("code") || hashParams.get("code");
+        var accessToken = queryParams.get("access_token") || hashParams.get("access_token");
+        var refreshToken = queryParams.get("refresh_token") || hashParams.get("refresh_token");
+        var oauthError = queryParams.get("error_description") || hashParams.get("error_description") ||
+          queryParams.get("error") || hashParams.get("error");
+        if (oauthError) throw new Error(String(oauthError).replace(/\+/g, " "));
 
-      var hashIdx = url.indexOf("#");
-      var queryIdx = url.indexOf("?");
-      var searchPart = "";
-      if (hashIdx !== -1) searchPart = url.slice(hashIdx + 1);
-      else if (queryIdx !== -1) searchPart = url.slice(queryIdx + 1);
-      else searchPart = url;
-
-      var params = new URLSearchParams(searchPart);
-      accessToken = params.get("access_token");
-      refreshToken = params.get("refresh_token");
-
-      if (!accessToken && searchPart.indexOf("access_token=") !== -1) {
-        var match = searchPart.match(/access_token=([^&]+)/);
-        if (match) accessToken = match[1];
-        var refMatch = searchPart.match(/refresh_token=([^&]+)/);
-        if (refMatch) refreshToken = refMatch[1];
-      }
-
-      if (accessToken) {
-        console.info("JOA Auth: Estableciendo sesión con tokens recibidos...");
-        var sessionRes = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken || ""
-        });
-
+        var sessionRes;
+        if (code) {
+          sessionRes = await supabase.auth.exchangeCodeForSession(code);
+        } else if (accessToken && refreshToken) {
+          sessionRes = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+        } else {
+          throw new Error("Google regresó sin código de autorización ni tokens de sesión.");
+        }
         if (sessionRes.error) throw sessionRes.error;
+        currentSession = sessionRes.data?.session || null;
+        currentUser = sessionRes.data?.user || currentSession?.user || null;
+        if (!currentUser || !currentSession) throw new Error("Google no devolvió una sesión válida para JOA.");
 
-        currentUser = sessionRes.data.user || sessionRes.data.session?.user;
-        currentSession = sessionRes.data.session;
         window.joaCurrentUser = currentUser;
         window.joaCurrentSession = currentSession;
-
-        if (currentUser) {
-          await ensureCommunityProfile(currentUser);
-          updateAuthUI();
-          window.closeJoaAuthModal();
-          showToast("¡Sesión iniciada con éxito en JOA Multiverso!");
+        await ensureCommunityProfile(currentUser);
+        updateAuthUI();
+        window.closeJoaAuthModal();
+        if (window.AndroidBridge && typeof window.AndroidBridge.clearPendingAuthCallbackUrl === "function") {
+          try { window.AndroidBridge.clearPendingAuthCallbackUrl(); } catch (bridgeErr) {}
         }
+        lastSuccessfulOAuthCallback = url;
+        showToast("¡Sesión iniciada con Google en JOA Multiverso!");
+        return true;
+      } catch (err) {
+        console.error("JOA Auth OAuth Callback Error:", err);
+        var userMsg = formatAuthError(err);
+        var msgEl = document.getElementById("joaAuthMsg");
+        if (msgEl) msgEl.textContent = userMsg;
+        showToast(userMsg);
+        return false;
       }
-    } catch (err) {
-      console.error("JOA Auth Deep Link Callback Error:", err);
-      showToast("Error al autenticar mediante Deep Link.");
-    }
+    })();
+    try { return await oauthCallbackInFlight; }
+    finally { oauthCallbackInFlight = null; }
   };
 
   /**
@@ -683,22 +614,16 @@
     initSupabase();
     if (!supabase) return;
 
-    // Comprobar callback pendiente de Deep Link desde AndroidBridge
+    // El callback nativo se limpia únicamente después de procesar correctamente el código PKCE.
     if (window.AndroidBridge && typeof window.AndroidBridge.getPendingAuthCallbackUrl === 'function') {
       try {
         var pendingUrl = window.AndroidBridge.getPendingAuthCallbackUrl();
-        if (pendingUrl) {
-          console.info("JOA Auth: Encontrado callback pendiente en AndroidBridge:", pendingUrl);
-          if (typeof window.AndroidBridge.clearPendingAuthCallbackUrl === 'function') {
-            window.AndroidBridge.clearPendingAuthCallbackUrl();
-          }
-          window.handleJoaAuthRedirect(pendingUrl);
-        }
-      } catch(e) {}
+        if (pendingUrl) window.handleJoaAuthRedirect(pendingUrl);
+      } catch(e) { console.warn("JOA Auth: No se pudo leer el callback pendiente:", e); }
     }
 
-    // Comprobar si la URL actual contiene hash con access_token
-    if (window.location.hash && window.location.hash.indexOf("access_token=") !== -1) {
+    if (/[?&]code=/.test(window.location.search || "") ||
+        /(?:^|[&#])(?:access_token|code)=/.test((window.location.hash || "").replace(/^#/, ""))) {
       window.handleJoaAuthRedirect(window.location.href);
     }
 
