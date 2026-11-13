@@ -9,7 +9,7 @@ import android.webkit.WebView;
 
 public class JoaAuthHandler {
     private static final String TAG = "JoaAuthHandler";
-    public static final String AUTH_REDIRECT_URL = "https://junior18cubano-hash.github.io/mi-catalogo/";
+    public static final String AUTH_REDIRECT_URL = "joacatalogo://auth";
 
     public static boolean shouldOverride(Context context, WebView view, String url) {
         if (url == null) return false;
