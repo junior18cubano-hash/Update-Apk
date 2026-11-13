@@ -146,7 +146,7 @@ a{color:var(--signal);}
 .sidebar-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);font-size:.8rem;color:var(--text3);}
 .sidebar-footer button{width:100%;margin-top:10px;}
 
-.main{flex:1;min-width:0;width:100%;max-width:100%;overflow-x:hidden;box-sizing:border-box;padding:20px 24px 40px;}
+.main{flex:1;min-width:0;width:100%;max-width:100%;overflow-x:hidden;box-sizing:border-box;padding:20px 24px 100px;}
 .topbar {
   display: flex;
   align-items: center;
@@ -7987,39 +7987,53 @@ a{color:var(--signal);}
 }
 
 /* 🔲 CONMUTADOR DE VISTA EN TOPBAR / HEADER (CUADRÍCULA VS LISTA) */
+/* ===== BARRA INFERIOR FIJA DE BÚSQUEDA Y VISTA ===== */
+.bottom-search-view-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px env(safe-area-inset-bottom, 12px);
+  background: rgba(5, 6, 10, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(0, 229, 255, 0.25);
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 229, 255, 0.1);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 🔲 CONMUTADOR DE VISTA DENTRO DE LA BARRA DE BÚSQUEDA */
 .topbar-view-mode-btn {
-  width: 44px;
-  height: 44px;
-  background: rgba(15, 23, 42, 0.88);
-  border: 1.5px solid rgba(61, 235, 255, 0.35);
-  border-radius: 14px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 10px;
   color: #00E5FF;
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   cursor: pointer;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(0, 229, 255, 0.12);
-  position: relative;
+  transition: all 0.2s ease;
   outline: none;
 }
-.topbar-view-mode-btn:hover {
-  background: rgba(0, 229, 255, 0.16);
+.topbar-view-mode-btn:hover, .topbar-view-mode-btn:active {
+  background: rgba(0, 229, 255, 0.25);
   border-color: #00E5FF;
   color: #FFFFFF;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 229, 255, 0.4);
-}
-.topbar-view-mode-btn:active {
-  transform: scale(0.94);
+  transform: scale(1.05);
 }
 .topbar-view-mode-btn.is-list-mode {
   background: linear-gradient(135deg, rgba(0, 229, 255, 0.22), rgba(0, 255, 178, 0.22));
   border-color: #00FFB2;
   color: #00FFB2;
-  box-shadow: 0 0 16px rgba(0, 255, 178, 0.35);
 }
 
 /* ========================================================
@@ -10049,5 +10063,2040 @@ a{color:var(--signal);}
   background: rgba(255, 59, 92, 0.3);
   transform: scale(1.08);
 }
+
+/* ============================================================
+   🌐 JOA GAMERS · MODAL DE AUTENTICACIÓN Y CUENTA SUPABASE
+   ============================================================ */
+.topbar-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.12), rgba(157, 78, 221, 0.16));
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  color: #00E5FF;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+.topbar-auth-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(157, 78, 221, 0.3));
+  border-color: #00E5FF;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+  transform: translateY(-1px);
+}
+.topbar-auth-btn.is-logged-in {
+  background: linear-gradient(135deg, rgba(0, 255, 178, 0.12), rgba(0, 229, 255, 0.1));
+  border-color: rgba(0, 255, 178, 0.5);
+  color: #FFF;
+  box-shadow: 0 0 12px rgba(0, 255, 178, 0.25);
+}
+.topbar-user-avatar-wrap {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00E5FF, #9D4EDD);
+}
+.topbar-user-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.topbar-user-initials {
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: #04050A;
+}
+.topbar-online-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00FFB2;
+  border: 1.5px solid #060A12;
+  box-shadow: 0 0 6px #00FFB2;
+}
+.topbar-user-name-txt {
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+/* Modales de Autenticación y Cuenta */
+.joa-auth-modal-box {
+  max-width: 440px;
+  width: 92%;
+  background: rgba(11, 16, 29, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px 20px;
+  position: relative;
+  animation: joaModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes joaModalPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.joa-auth-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.joa-auth-eyebrow {
+  display: inline-block;
+  font-size: 0.68rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #00FFB2;
+  background: rgba(0, 255, 178, 0.1);
+  border: 1px solid rgba(0, 255, 178, 0.3);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.joa-auth-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #FFF;
+  margin: 0 0 6px 0;
+}
+.joa-auth-desc {
+  font-size: 0.82rem;
+  color: #94A3B8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Botón Google OAuth */
+.joa-oauth-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #FFF;
+  color: #1F2937;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  margin-top: 14px;
+}
+.joa-oauth-btn:hover {
+  background: #F3F4F6;
+  transform: translateY(-1px);
+}
+.joa-google-g {
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: #4285F4;
+}
+
+.joa-auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 18px 0;
+  color: #64748B;
+  font-size: 0.75rem;
+}
+.joa-auth-divider::before, .joa-auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.joa-auth-divider span {
+  padding: 0 10px;
+}
+
+/* Campos de Formulario */
+.joa-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.joa-auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+}
+.joa-auth-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #CBD5E1;
+}
+.joa-auth-input {
+  width: 100%;
+  background: rgba(4, 7, 14, 0.7);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: #FFF;
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.joa-auth-input:focus {
+  border-color: #00E5FF;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+  background: rgba(4, 7, 14, 0.9);
+}
+
+.joa-auth-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #00E5FF 0%, #00FFB2 100%);
+  color: #04050A;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.92rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+  margin-top: 6px;
+}
+.joa-auth-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(0, 255, 178, 0.6);
+}
+
+.joa-auth-switch-link {
+  background: none;
+  border: none;
+  color: #00E5FF;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  padding: 8px;
+  margin-top: 4px;
+  transition: opacity 0.2s;
+}
+.joa-auth-switch-link:hover {
+  text-decoration: underline;
+}
+
+.joa-auth-forgot-link {
+  background: none;
+  border: none;
+  color: #94A3B8;
+  font-size: 0.75rem;
+  cursor: pointer;
+  align-self: flex-end;
+  padding: 2px 0;
+  transition: color 0.2s;
+}
+.joa-auth-forgot-link:hover {
+  color: #00E5FF;
+  text-decoration: underline;
+}
+
+.joa-auth-msg {
+  font-size: 0.8rem;
+  color: #FF5252;
+  text-align: center;
+  min-height: 18px;
+  margin-top: 4px;
+}
+
+/* Modal de Cuenta / Perfil Activo */
+.joa-acc-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.joa-acc-avatar-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00E5FF, #9D4EDD);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #04050A;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.45);
+  border: 3px solid rgba(0, 229, 255, 0.6);
+}
+.joa-acc-name {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #FFF;
+  margin: 0;
+}
+.joa-acc-badge {
+  font-size: 0.72rem;
+  background: rgba(0, 255, 178, 0.15);
+  color: #00FFB2;
+  border: 1px solid rgba(0, 255, 178, 0.4);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 800;
+}
+.joa-acc-details-list {
+  background: rgba(4, 7, 14, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.joa-acc-detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+}
+.joa-acc-detail-lbl {
+  color: #94A3B8;
+}
+.joa-acc-detail-val {
+  color: #FFF;
+  font-weight: 700;
+}
+.joa-acc-logout-btn {
+  width: 100%;
+  background: rgba(255, 0, 85, 0.12);
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  color: #FF3B5C;
+  border-radius: 12px;
+  padding: 11px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.joa-acc-logout-btn:hover {
+  background: rgba(255, 0, 85, 0.25);
+  box-shadow: 0 0 14px rgba(255, 0, 85, 0.35);
+}
+
+/* ============================================================
+   ⭐ ETAPA 2: FAVORITOS Y RESEÑAS DE LA COMUNIDAD (SUPABASE)
+   ============================================================ */
+.btn-favorite-detail {
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.15), rgba(255, 64, 129, 0.22));
+  border: 1px solid rgba(255, 0, 128, 0.5);
+  color: #FF4081;
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .2s ease;
+  white-space: nowrap;
+  box-shadow: 0 0 12px rgba(255, 0, 128, 0.25);
+}
+.btn-favorite-detail:hover {
+  background: linear-gradient(135deg, rgba(255, 0, 128, 0.3), rgba(255, 64, 129, 0.35));
+  border-color: #FF007F;
+  box-shadow: 0 0 16px rgba(255, 0, 128, 0.45);
+  transform: translateY(-1px);
+}
+.btn-favorite-detail.is-active {
+  background: linear-gradient(135deg, #FF0055, #FF4081);
+  color: #FFF;
+  border-color: #FF007F;
+  box-shadow: 0 0 18px rgba(255, 0, 85, 0.6);
+}
+
+/* Tarjetas de Reseñas de la Comunidad */
+.joa-community-review-card {
+  background: rgba(11, 16, 29, 0.7);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s ease;
+}
+.joa-community-review-card:hover {
+  border-color: rgba(0, 229, 255, 0.45);
+}
+.joa-review-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.joa-reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.joa-reviewer-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00E5FF, #9D4EDD);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #04050A;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.joa-reviewer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.joa-reviewer-name {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #FFF;
+}
+.joa-review-stars {
+  color: #FFD54F;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+}
+.joa-review-body {
+  font-size: 0.85rem;
+  color: #CBD5E1;
+  line-height: 1.45;
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+}
+.joa-review-date {
+  font-size: 0.7rem;
+  color: #64748B;
+  align-self: flex-end;
+}
+.joa-review-summary-banner {
+  background: linear-gradient(135deg, rgba(255, 213, 79, 0.1), rgba(0, 229, 255, 0.08));
+  border: 1px solid rgba(255, 213, 79, 0.3);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.joa-review-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.joa-review-big-score {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #FFD54F;
+}
+
+/* ============================================================
+   🌐 ETAPA 3: MURO SOCIAL DE LA COMUNIDAD (SUPABASE)
+   ============================================================ */
+.topbar-community-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(157, 78, 221, 0.15), rgba(0, 229, 255, 0.1));
+  border: 1px solid rgba(157, 78, 221, 0.45);
+  color: #D8B4FE;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(157, 78, 221, 0.2);
+}
+.topbar-community-btn:hover {
+  background: linear-gradient(135deg, rgba(157, 78, 221, 0.3), rgba(0, 229, 255, 0.25));
+  border-color: #00E5FF;
+  color: #FFF;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.joa-community-modal-box {
+  max-width: 620px;
+  width: 95%;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 15, 27, 0.96);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(157, 78, 221, 0.2);
+  border-radius: 20px;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  animation: joaModalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.joa-community-modal-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(14, 21, 38, 0.6);
+}
+.joa-community-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.joa-community-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.joa-community-sub {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #94A3B8;
+}
+.joa-community-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.joa-btn-refresh-feed {
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  color: #00E5FF;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.joa-btn-refresh-feed:hover {
+  background: rgba(0, 229, 255, 0.25);
+}
+
+.joa-community-scroll-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Compositor de Nueva Publicación */
+.joa-composer-card {
+  background: linear-gradient(145deg, rgba(18, 27, 49, 0.8), rgba(11, 17, 33, 0.9));
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.joa-composer-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.joa-composer-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00E5FF, #9D4EDD);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #04050A;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.joa-composer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.joa-composer-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #FFF;
+}
+.joa-composer-textarea {
+  width: 100%;
+  background: rgba(4, 7, 14, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #FFF;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  outline: none;
+  resize: vertical;
+  min-height: 65px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.joa-composer-textarea:focus {
+  border-color: #00E5FF;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+}
+.joa-composer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.joa-composer-hint {
+  font-size: 0.72rem;
+  color: #64748B;
+}
+.joa-composer-btn {
+  background: linear-gradient(135deg, #00E5FF, #00FFB2);
+  color: #04050A;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+}
+.joa-composer-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(0, 255, 178, 0.5);
+}
+
+.joa-guest-prompt-card {
+  background: linear-gradient(145deg, rgba(157, 78, 221, 0.12), rgba(0, 229, 255, 0.08));
+  border: 1px dashed rgba(157, 78, 221, 0.4);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.joa-guest-prompt-text {
+  font-size: 0.84rem;
+  color: #CBD5E1;
+  line-height: 1.4;
+}
+
+/* Tarjetas de Publicación en el Feed */
+.joa-feed-card {
+  background: linear-gradient(145deg, #121B31, #0B1121);
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease;
+}
+.joa-feed-card:hover {
+  border-color: rgba(0, 229, 255, 0.45);
+}
+.joa-feed-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.joa-feed-author-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.joa-feed-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00E5FF, #9D4EDD);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #04050A;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(0, 229, 255, 0.4);
+}
+.joa-feed-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.joa-feed-author-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.joa-feed-author-name {
+  font-size: 0.92rem;
+  color: #FFF;
+  font-weight: 800;
+}
+.joa-feed-author-meta {
+  font-size: 0.72rem;
+  color: #64748B;
+}
+.joa-feed-delete-btn {
+  background: rgba(255, 0, 85, 0.12);
+  border: 1px solid rgba(255, 0, 85, 0.35);
+  color: #FF3B5C;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.joa-feed-delete-btn:hover {
+  background: rgba(255, 0, 85, 0.25);
+}
+
+.joa-feed-body {
+  font-size: 0.9rem;
+  color: #E2E8F0;
+  line-height: 1.5;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.joa-feed-media-link {
+  font-size: 0.8rem;
+  color: #00E5FF;
+  text-decoration: none;
+  font-weight: 700;
+}
+.joa-feed-media-link:hover {
+  text-decoration: underline;
+}
+
+.joa-feed-actions {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 10px;
+}
+.joa-feed-action-btn {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #CBD5E1;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.joa-feed-action-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(0, 229, 255, 0.4);
+}
+.joa-feed-action-btn.is-reacted {
+  background: rgba(255, 0, 85, 0.15);
+  border-color: rgba(255, 0, 85, 0.5);
+  color: #FF4081;
+}
+
+/* Caja y Comentarios */
+.joa-feed-comments-box {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.joa-comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.joa-comment-item {
+  background: rgba(4, 7, 14, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  position: relative;
+}
+.joa-comment-author {
+  color: #00E5FF;
+  font-weight: 800;
+}
+.joa-comment-text {
+  color: #CBD5E1;
+}
+.joa-comment-time {
+  display: block;
+  font-size: 0.65rem;
+  color: #64748B;
+  margin-top: 2px;
+}
+.joa-no-comments {
+  font-size: 0.78rem;
+  color: #64748B;
+  margin: 4px 0;
+  font-style: italic;
+}
+.joa-comment-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.joa-comment-input {
+  flex: 1;
+  background: rgba(4, 7, 14, 0.8);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: #FFF;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.joa-comment-input:focus {
+  border-color: #00E5FF;
+}
+.joa-comment-send-btn {
+  background: linear-gradient(135deg, #9D4EDD, #00E5FF);
+  color: #04050A;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* ============================================================
+ * 👥 ESTILOS DE ETAPA 4: NAVEGACIÓN, AMIGOS, CHATS Y GRUPOS
+ * ============================================================ */
+
+/* Barra de pestañas de la Comunidad */
+.joa-comm-tabs-nav {
+  display: flex;
+  background: rgba(8, 12, 22, 0.95);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  padding: 8px 12px;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.joa-comm-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+.joa-comm-tab {
+  flex: 1;
+  min-width: 78px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #94A3B8;
+  padding: 8px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+.joa-comm-tab:hover {
+  background: rgba(0, 229, 255, 0.1);
+  color: #FFF;
+}
+.joa-comm-tab.active {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.22), rgba(0, 255, 178, 0.18));
+  border-color: #00E5FF;
+  color: #00E5FF;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.3);
+}
+.joa-comm-tab-badge {
+  background: #FF0055;
+  color: #FFF;
+  font-size: 0.65rem;
+  font-weight: 900;
+  border-radius: 10px;
+  padding: 1px 6px;
+  line-height: 1.2;
+}
+
+/* Tarjetas y Secciones Sociales */
+.joa-social-section-card {
+  background: rgba(14, 21, 38, 0.65);
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.joa-social-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.joa-social-section-head h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.joa-btn-mini-refresh {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.joa-btn-mini-refresh:hover {
+  color: #00E5FF;
+  border-color: #00E5FF;
+}
+
+/* Solicitudes de amistad */
+.joa-requests-header {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #FF55AA;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.joa-requests-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.joa-request-card {
+  background: linear-gradient(135deg, rgba(255, 0, 85, 0.08), rgba(157, 78, 221, 0.12));
+  border: 1px solid rgba(255, 0, 85, 0.35);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.joa-request-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.joa-request-info strong {
+  font-size: 0.85rem;
+  color: #FFF;
+}
+.joa-request-info small {
+  font-size: 0.72rem;
+  color: #94A3B8;
+}
+.joa-request-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.joa-btn-accept-friend {
+  background: linear-gradient(135deg, #00FFB2, #00E5FF);
+  color: #04050A;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 178, 0.35);
+}
+.joa-btn-reject-friend {
+  background: rgba(255, 0, 85, 0.15);
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  color: #FF55AA;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Tarjetas de Amigos */
+.joa-friends-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.joa-friend-card {
+  background: linear-gradient(145deg, #101728, #0B101E);
+  border: 1px solid rgba(0, 229, 255, 0.22);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s;
+}
+.joa-friend-card:hover {
+  border-color: rgba(0, 229, 255, 0.45);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+.joa-friend-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.joa-friend-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.joa-friend-card-info strong {
+  font-size: 0.88rem;
+  color: #FFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.joa-friend-sub {
+  font-size: 0.72rem;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.joa-friend-online-dot {
+  color: #00FFB2;
+  font-weight: 800;
+}
+.joa-friend-games {
+  font-size: 0.72rem;
+  color: #D8B4FE;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.joa-friend-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.joa-friend-msg-btn {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.18), rgba(0, 255, 178, 0.15));
+  border: 1px solid #00E5FF;
+  color: #00E5FF;
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.joa-friend-msg-btn:hover {
+  background: #00E5FF;
+  color: #04050A;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+}
+.joa-friend-del-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #64748B;
+  border-radius: 10px;
+  padding: 7px 10px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.joa-friend-del-btn:hover {
+  color: #FF0055;
+  border-color: #FF0055;
+}
+
+/* Buscador y Directorio */
+.joa-search-bar-wrap {
+  width: 100%;
+}
+.joa-search-input {
+  width: 100%;
+  background: rgba(4, 7, 14, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: #FFF;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.84rem;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+.joa-search-input:focus {
+  border-color: #00E5FF;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+}
+.joa-directory-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.joa-directory-card {
+  background: rgba(10, 16, 30, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.joa-directory-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.joa-directory-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.joa-directory-card-info strong {
+  font-size: 0.86rem;
+  color: #FFF;
+}
+.joa-directory-card-info small {
+  font-size: 0.72rem;
+  color: #94A3B8;
+}
+.joa-dir-bio {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #CBD5E1;
+  line-height: 1.35;
+}
+.joa-dir-games {
+  font-size: 0.72rem;
+  color: #00FFB2;
+}
+.joa-dir-btn-add {
+  background: linear-gradient(135deg, #00E5FF, #00FFB2);
+  color: #04050A;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+  transition: all 0.2s;
+}
+.joa-dir-btn-add:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px rgba(0, 255, 178, 0.5);
+}
+.joa-dir-btn-chat {
+  background: rgba(0, 229, 255, 0.15);
+  border: 1px solid #00E5FF;
+  color: #00E5FF;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.joa-dir-btn-cancel {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94A3B8;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.joa-dir-btn-accept {
+  background: #00FFB2;
+  color: #04050A;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.joa-dir-state-pill {
+  font-size: 0.7rem;
+  color: #64748B;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* ============================================================
+ * CHATS Y MENSAJERÍA PRIVADA
+ * ============================================================ */
+.joa-chat-entries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.joa-chat-entry-card {
+  background: linear-gradient(145deg, #101729, #090E1B);
+  border: 1px solid rgba(0, 229, 255, 0.18);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.joa-chat-entry-card:hover {
+  border-color: #00E5FF;
+  background: linear-gradient(145deg, #141E34, #0D1426);
+  box-shadow: 0 4px 18px rgba(0, 229, 255, 0.2);
+  transform: translateY(-1px);
+}
+.joa-chat-entry-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.joa-chat-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.joa-chat-entry-top strong {
+  font-size: 0.88rem;
+  color: #FFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.joa-chat-entry-time {
+  font-size: 0.7rem;
+  color: #64748B;
+}
+.joa-chat-entry-preview {
+  font-size: 0.78rem;
+  color: #94A3B8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ventana de Chat Activo */
+.joa-active-chat-container {
+  display: flex;
+  flex-direction: column;
+  background: rgba(6, 10, 20, 0.95);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 420px;
+  max-height: 60vh;
+}
+.joa-active-chat-header {
+  padding: 10px 14px;
+  background: rgba(14, 21, 38, 0.9);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.joa-chat-back-btn {
+  background: rgba(0, 229, 255, 0.12);
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  color: #00E5FF;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.joa-chat-back-btn:hover {
+  background: rgba(0, 229, 255, 0.25);
+}
+.joa-chat-header-peer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.joa-chat-header-info {
+  display: flex;
+  flex-direction: column;
+}
+.joa-chat-header-info strong {
+  font-size: 0.88rem;
+  color: #FFF;
+}
+.joa-chat-header-info small {
+  font-size: 0.7rem;
+}
+
+/* Área de mensajes con scroll */
+.joa-chat-messages-area {
+  flex: 1;
+  padding: 14px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 250px;
+}
+.joa-chat-bubble-wrap {
+  display: flex;
+  width: 100%;
+}
+.joa-chat-bubble-wrap.mine {
+  justify-content: flex-end;
+}
+.joa-chat-bubble-wrap.theirs {
+  justify-content: flex-start;
+}
+.joa-chat-bubble {
+  max-width: 80%;
+  padding: 9px 13px;
+  border-radius: 16px;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  position: relative;
+  word-break: break-word;
+}
+.joa-chat-bubble-wrap.mine .joa-chat-bubble {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(0, 255, 178, 0.22));
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  color: #FFF;
+  border-bottom-right-radius: 4px;
+}
+.joa-chat-bubble-wrap.theirs .joa-chat-bubble {
+  background: rgba(20, 29, 49, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #E2E8F0;
+  border-bottom-left-radius: 4px;
+}
+.joa-chat-text {
+  margin-bottom: 3px;
+}
+.joa-chat-time {
+  display: block;
+  font-size: 0.65rem;
+  color: #94A3B8;
+  text-align: right;
+}
+
+/* Compositor de Chat */
+.joa-chat-composer-form {
+  padding: 10px 12px;
+  background: rgba(10, 15, 28, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.joa-chat-input {
+  flex: 1;
+  background: rgba(4, 7, 14, 0.85);
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: #FFF;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+.joa-chat-input:focus {
+  border-color: #00E5FF;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+.joa-chat-send-btn {
+  background: linear-gradient(135deg, #00E5FF, #00FFB2);
+  color: #04050A;
+  border: none;
+  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.joa-chat-send-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(0, 255, 178, 0.5);
+}
+
+/* ============================================================
+ * GRUPOS DE JUGADORES
+ * ============================================================ */
+.joa-btn-toggle-new-group {
+  background: linear-gradient(135deg, #9D4EDD, #00E5FF);
+  color: #04050A;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(157, 78, 221, 0.35);
+  transition: all 0.2s;
+}
+.joa-btn-toggle-new-group:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.5);
+}
+
+/* Formulario Crear Grupo */
+.joa-create-group-card {
+  background: linear-gradient(145deg, #141D35, #0C1222);
+  border: 1px solid rgba(157, 78, 221, 0.4);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+.joa-create-group-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.joa-create-group-head h5 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #D8B4FE;
+}
+.joa-btn-close-form {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #FFF;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+.joa-form-input, .joa-form-select, .joa-form-textarea {
+  background: rgba(4, 7, 14, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #FFF;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.joa-form-input:focus, .joa-form-select:focus, .joa-form-textarea:focus {
+  border-color: #00E5FF;
+}
+.joa-form-textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+/* Tarjetas de Grupos */
+.joa-groups-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.joa-group-card {
+  background: linear-gradient(145deg, #10172A, #0A0F1D);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s;
+}
+.joa-group-card:hover {
+  border-color: rgba(0, 229, 255, 0.45);
+}
+.joa-group-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.joa-group-title {
+  margin: 0 0 6px 0;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #FFF;
+}
+.joa-group-meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.joa-group-pill {
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  color: #00E5FF;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.joa-group-pill.count {
+  background: rgba(0, 255, 178, 0.1);
+  border-color: rgba(0, 255, 178, 0.3);
+  color: #00FFB2;
+}
+.joa-group-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #CBD5E1;
+  line-height: 1.4;
+}
+.joa-group-rules-preview {
+  font-size: 0.74rem;
+  color: #94A3B8;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border-left: 2px solid #9D4EDD;
+}
+.joa-group-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: #64748B;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 8px;
+}
+.joa-group-role-badge {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.joa-group-role-badge.owner {
+  background: rgba(255, 179, 0, 0.15);
+  border: 1px solid #FFB300;
+  color: #FFD54F;
+}
+.joa-group-role-badge.member {
+  background: rgba(0, 255, 178, 0.15);
+  border: 1px solid #00FFB2;
+  color: #00FFB2;
+}
+.joa-btn-join-group {
+  background: linear-gradient(135deg, #00E5FF, #00FFB2);
+  color: #04050A;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.joa-btn-join-group:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px rgba(0, 255, 178, 0.5);
+}
+.joa-btn-leave-group {
+  background: rgba(255, 0, 85, 0.15);
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  color: #FF55AA;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.joa-btn-leave-group:hover {
+  background: rgba(255, 0, 85, 0.28);
+}
+
+/* ============================================================
+ * 🎁 ESTILOS DE ETAPA 5: NOTIFICACIONES, REWARDS Y SELECTOR
+ * ============================================================ */
+
+/* Botón de Notificaciones en la Topbar */
+.topbar-notif-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(255, 179, 0, 0.12), rgba(255, 0, 85, 0.1));
+  border: 1px solid rgba(255, 179, 0, 0.35);
+  color: #FFD54F;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  white-space: nowrap;
+}
+.topbar-notif-btn:hover {
+  border-color: #FFD54F;
+  box-shadow: 0 0 14px rgba(255, 179, 0, 0.35);
+  transform: translateY(-1px);
+}
+.topbar-notif-badge {
+  background: #FF0055;
+  color: #FFF;
+  font-size: 0.65rem;
+  font-weight: 900;
+  border-radius: 10px;
+  padding: 1px 6px;
+  line-height: 1.2;
+  box-shadow: 0 0 8px rgba(255, 0, 85, 0.6);
+}
+
+/* Botón Marcar leídas */
+.joa-btn-mark-read {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94A3B8;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.joa-btn-mark-read:hover {
+  color: #00FFB2;
+  border-color: #00FFB2;
+}
+
+/* Lista de Notificaciones */
+.joa-notif-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.joa-notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(14, 21, 38, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.joa-notif-item:hover {
+  border-color: rgba(0, 229, 255, 0.35);
+  background: rgba(20, 29, 52, 0.85);
+  transform: translateY(-1px);
+}
+.joa-notif-item.unread {
+  background: linear-gradient(145deg, rgba(0, 229, 255, 0.1), rgba(157, 78, 221, 0.12));
+  border-color: rgba(0, 229, 255, 0.35);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.1);
+}
+.joa-notif-icon-col {
+  position: relative;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.joa-notif-unread-dot {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: #00FFB2;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #00FFB2;
+}
+.joa-notif-body-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.joa-notif-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.joa-notif-head strong {
+  font-size: 0.86rem;
+  color: #FFF;
+}
+.joa-notif-time {
+  font-size: 0.68rem;
+  color: #64748B;
+  white-space: nowrap;
+}
+.joa-notif-desc {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #CBD5E1;
+  line-height: 1.35;
+}
+
+/* ============================================================
+ * JOA REWARDS & REGALOS
+ * ============================================================ */
+.joa-rewards-hero-card {
+  background: linear-gradient(135deg, rgba(255, 179, 0, 0.15), rgba(255, 0, 85, 0.12));
+  border: 1px solid rgba(255, 179, 0, 0.35);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.joa-rewards-hero-content h4 {
+  margin: 0 0 6px 0;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #FFD54F;
+}
+.joa-rewards-hero-content p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #E2E8F0;
+  line-height: 1.45;
+}
+.joa-rewards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.joa-reward-card {
+  background: linear-gradient(145deg, #10172A, #0A0F1E);
+  border: 1px solid rgba(255, 179, 0, 0.25);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s;
+}
+.joa-reward-card:hover {
+  border-color: rgba(255, 179, 0, 0.5);
+}
+.joa-reward-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.joa-reward-kind-pill {
+  padding: 3px 9px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.joa-reward-kind-pill.service {
+  background: rgba(0, 229, 255, 0.15);
+  border: 1px solid #00E5FF;
+  color: #00E5FF;
+}
+.joa-reward-kind-pill.community {
+  background: rgba(157, 78, 221, 0.15);
+  border: 1px solid #D8B4FE;
+  color: #D8B4FE;
+}
+.joa-reward-prize-txt {
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #FFD54F;
+}
+.joa-reward-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #FFF;
+}
+.joa-reward-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #94A3B8;
+  line-height: 1.4;
+}
+.joa-reward-req-box {
+  background: rgba(0, 0, 0, 0.35);
+  border-left: 3px solid #00E5FF;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  color: #E2E8F0;
+  line-height: 1.4;
+}
+.joa-reward-bundle-note {
+  font-size: 0.76rem;
+  color: #A7F3D0;
+  background: rgba(0, 255, 178, 0.08);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.joa-reward-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 6px;
+}
+.joa-btn-claim-reward {
+  background: linear-gradient(135deg, #FFB300, #FF0055);
+  color: #0A0304;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(255, 179, 0, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.joa-btn-claim-reward:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(255, 0, 85, 0.55);
+}
+.joa-claim-badge {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+.joa-claim-badge.pending {
+  background: rgba(255, 179, 0, 0.15);
+  border: 1px solid #FFB300;
+  color: #FFD54F;
+}
+.joa-claim-badge.approved {
+  background: rgba(0, 255, 178, 0.15);
+  border: 1px solid #00FFB2;
+  color: #00FFB2;
+}
+.joa-claim-badge.delivered {
+  background: rgba(0, 229, 255, 0.15);
+  border: 1px solid #00E5FF;
+  color: #00E5FF;
+}
+.joa-claim-badge.rejected {
+  background: rgba(255, 0, 85, 0.15);
+  border: 1px solid #FF0055;
+  color: #FF55AA;
+}
+
+/* Historial de Solicitudes */
+.joa-claims-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.joa-claim-history-card {
+  background: rgba(8, 12, 22, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.joa-claim-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.joa-claim-history-top strong {
+  font-size: 0.88rem;
+  color: #FFF;
+}
+.joa-claim-prods-preview {
+  font-size: 0.74rem;
+  color: #00FFB2;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+/* ============================================================
+ * SELECTOR DE PRODUCTOS DEL CATÁLOGO (PICKER)
+ * ============================================================ */
+.joa-picker-progress-bar {
+  background: rgba(10, 16, 30, 0.9);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.2);
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.84rem;
+  color: #FFF;
+}
+.joa-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+.joa-picker-card {
+  background: rgba(14, 21, 38, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.joa-picker-card:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  transform: translateY(-2px);
+}
+.joa-picker-card.selected {
+  border: 2px solid #00FFB2;
+  box-shadow: 0 0 15px rgba(0, 255, 178, 0.4);
+}
+.joa-picker-cover-wrap {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+.joa-picker-cover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.joa-picker-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(4, 7, 14, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+.joa-picker-card.selected .joa-picker-check {
+  background: #00FFB2;
+  border-color: #00FFB2;
+  color: #04050A;
+  box-shadow: 0 0 10px rgba(0, 255, 178, 0.8);
+}
+.joa-picker-info {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.joa-picker-title {
+  font-size: 0.76rem;
+  color: #FFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.joa-picker-type {
+  font-size: 0.68rem;
+  color: #00E5FF;
+}
+.joa-picker-footer {
+  padding: 12px 16px;
+  background: rgba(10, 15, 28, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+}
+
+
 
 

@@ -2982,6 +2982,10 @@ async function openDetail(id) {
     detailModalEl.scrollTo({ top: 0, behavior: 'smooth' });
   }
   document.body.style.overflow = 'hidden';
+
+  // 🌐 Sincronización Supabase JOA Multiverso (Favoritos y Reseñas en tiempo real)
+  if (typeof window.updateFavoriteDetailBtn === 'function') window.updateFavoriteDetailBtn();
+  if (typeof window.loadCatalogItemReviews === 'function') window.loadCatalogItemReviews(it);
 }
 
 function renderMediaSections(data) {
@@ -3332,6 +3336,7 @@ function renderStarPicker(currentRating) {
   }
   draw();
   container._getSelected = () => selected;
+  container._setSelected = (val) => { selected = parseInt(val, 10) || 0; draw(); };
 }
 
 async function saveMyReview() {

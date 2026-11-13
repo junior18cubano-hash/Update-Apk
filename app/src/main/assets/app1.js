@@ -1667,6 +1667,7 @@ async function bootApp() {
     if (typeof syncFavoritesMetadataOffline === 'function') syncFavoritesMetadataOffline();
   }, 500);
   setTimeout(() => { initBgSyncWifiState(); initAppTheme(); initCustomPushAlertsState(); initQuickAccessState(); }, 600);
+  setTimeout(() => { if (typeof autoCleanOldImagesFromIndexedDB === 'function') autoCleanOldImagesFromIndexedDB(30); }, 2000);
   setTimeout(() => { if (typeof checkAndStartTutorial === 'function') checkAndStartTutorial(); }, 750);
   setTimeout(() => {
     if (window.AndroidBridge && typeof window.AndroidBridge.getInitialSection === 'function') {
@@ -3665,6 +3666,112 @@ async function executeCleanOldImagesCache() {
     if (executeBtn) executeBtn.disabled = false;
   }
 }
+
+/* ========================================================
+ * 🧹 LIMPIEZA AUTOMÁTICA DE IMÁGENES ANTIGUAS (>30 DÍAS Y NO FAVORITAS)
+ * ======================================================== */
+async function autoCleanOldImagesFromIndexedDB(maxAgeDays = 30) {
+  try {
+    const now = Date.now();
+    const favSet = new Set();
+    
+    // 1. Recopilar favoritos del usuario para protegerlos
+    try {
+      const uStates = (typeof userStates !== 'undefined' && Array.isArray(userStates) && userStates.length > 0) 
+        ? userStates 
+        : (typeof idbGetAll === 'function' ? await idbGetAll('user_states') : []);
+      if (Array.isArray(uStates)) {
+        uStates.forEach(s => {
+          if (s && (s.status === 'wishlist' || s.status === 'playing' || s.isFavorite || s.status === 'favorite')) {
+            if (s.itemId) favSet.add(String(s.itemId).toLowerCase());
+          }
+        });
+      }
+    } catch(e) {}
+
+    // Activos de sistema protegidos que jamás se eliminan
+    const systemProtectedAssets = ['icon-', 'logo', 'favicon', 'placeholder', 'spinner', 'default', 'avatar', 'service_', 'joa_gamers', 'splash', 'img/', 'hero'];
+
+    // 2. Obtener registros de item_media_cache desde IndexedDB
+    if (typeof idbGetAll !== 'function') return { success: false, deletedCount: 0, freedBytes: 0 };
+    const records = await idbGetAll('item_media_cache');
+    if (!Array.isArray(records) || records.length === 0) {
+      return { success: true, deletedCount: 0, freedBytes: 0 };
+    }
+
+    const keysToDelete = [];
+    let freedBytes = 0;
+
+    records.forEach(rec => {
+      if (!rec || !rec.itemId) return;
+      const itemIdStr = String(rec.itemId).toLowerCase();
+      const isProtected = systemProtectedAssets.some(p => itemIdStr.includes(p));
+      if (isProtected) return;
+
+      const isFav = favSet.has(itemIdStr);
+      if (isFav) return; // Preservar las imágenes de favoritos intactas
+
+      // Calcular antigüedad en días
+      let ageDays = 31;
+      if (rec.savedAt) {
+        const diffMs = now - new Date(rec.savedAt).getTime();
+        if (!isNaN(diffMs) && diffMs > 0) {
+          ageDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        }
+      }
+
+      if (ageDays >= maxAgeDays) {
+        keysToDelete.push(rec.itemId);
+        const sizeBytes = rec.size || (rec.dataUrl ? Math.round(rec.dataUrl.length * 0.75) : 120 * 1024);
+        freedBytes += sizeBytes;
+      }
+    });
+
+    // 3. Ejecutar borrado en IndexedDB si se encontraron imágenes antiguas no favoritas
+    if (keysToDelete.length > 0) {
+      await idbBulkDelete('item_media_cache', keysToDelete);
+      
+      // Limpiar memoria caché activa si existe
+      if (typeof inMemoryImageCache !== 'undefined' && inMemoryImageCache.delete) {
+        keysToDelete.forEach(k => inMemoryImageCache.delete(k));
+      }
+
+      // Purgar también de CacheStorage de imágenes si aplica
+      if ('caches' in window) {
+        try {
+          const cacheNames = await caches.keys();
+          for (const cName of cacheNames) {
+            if (cName.includes('images') || cName.includes('media')) {
+              const c = await caches.open(cName);
+              for (const k of keysToDelete) {
+                await c.delete(k);
+              }
+            }
+          }
+        } catch(e) {}
+      }
+
+      const freedMbStr = (freedBytes / (1024 * 1024)).toFixed(1);
+      console.log(`🧹 [AutoClean IDB] Se eliminaron ${keysToDelete.length} imágenes no favoritas de IndexedDB (> ${maxAgeDays} días, ~${freedMbStr} MB liberados).`);
+    }
+
+    // 4. Solicitar al Service Worker ejecutar su observador de almacenamiento (Storage Observer)
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'CHECK_STORAGE_OBSERVER' });
+    }
+
+    return {
+      success: true,
+      deletedCount: keysToDelete.length,
+      freedBytes: freedBytes,
+      freedMB: (freedBytes / (1024 * 1024)).toFixed(1)
+    };
+  } catch (err) {
+    console.error("❌ [AutoClean IDB] Error al limpiar imágenes antiguas de IndexedDB:", err);
+    return { success: false, error: err.message, deletedCount: 0, freedBytes: 0 };
+  }
+}
+window.autoCleanOldImagesFromIndexedDB = autoCleanOldImagesFromIndexedDB;
 
 // ========================================================
 // 🚀 SINCRONIZACIÓN DE VERSIÓN DE LA APK EN PANTALLA DE INICIO

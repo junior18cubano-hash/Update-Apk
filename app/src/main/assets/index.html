@@ -85,13 +85,13 @@ setTimeout(function() {
           <div style="width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#00E5FF,#E879F9);display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 0 10px rgba(0,229,255,0.7);">🎮</div>
           <div class="joa-brand-text-col">
             <span class="joa-telemetry-title">JOA GAMER</span>
-            <span class="joa-brand-subtitle-mini">MULTIVERSO MULTIMEDIA · v1.0.8</span>
+            <span class="joa-brand-subtitle-mini">MULTIVERSO MULTIMEDIA · v1.0.9</span>
           </div>
         </div>
       </div>
       <div class="joa-telemetry-right">
         <span>SISTEMA: <b class="joa-val-cyan">ONLINE</b></span>
-        <span>MOTOR: <b class="joa-val-mint">v1.0.8</b></span>
+        <span>MOTOR: <b class="joa-val-mint">v1.0.9</b></span>
       </div>
     </div>
 
@@ -152,7 +152,7 @@ setTimeout(function() {
       <div class="joa-footer-meta">
         <span id="doomSpeedIndicator">⚡ ENLACE: 1.4 GB/s ULTRARÁPIDO</span>
         <span>🛡️ BÓVEDA LOCAL: SEGURA</span>
-        <span>✨ MOTOR APK: v1.0.8 OPERATIVO</span>
+        <span>✨ MOTOR APK: v1.0.9 OPERATIVO</span>
       </div>
     </div>
   </div>
@@ -262,6 +262,47 @@ setTimeout(function() {
           <span>📊 Mi Panel</span>
         </a>
       </nav>
+      <div class="sidebar-section-label">Comunidad JOA Multiverso</div>
+      <nav>
+        <a class="sidebar-link" id="sidebarCommunityFeedLink" onclick="toggleSidebar(false); openJoaCommunityTab('feed');" style="background:linear-gradient(90deg, rgba(157,78,221,0.18) 0%, rgba(0,229,255,0.12) 100%); border:1.5px solid rgba(157,78,221,0.5); color:#D8B4FE; font-weight:800; box-shadow:0 3px 12px rgba(157,78,221,0.22); margin-bottom:4px;">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.15rem; filter:drop-shadow(0 0 6px #9D4EDD);">🌐</span>
+            <span>Muro Social</span>
+          </span>
+          <span style="font-size:0.62rem; background:linear-gradient(135deg, #00E5FF, #00FFB2); color:#04050A; padding:2px 7px; border-radius:6px; font-weight:900;">ONLINE</span>
+        </a>
+        <a class="sidebar-link" id="sidebarCommunityFriendsLink" onclick="toggleSidebar(false); openJoaCommunityTab('friends');">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.15rem;">👥</span>
+            <span>Amigos & Solicitudes</span>
+          </span>
+        </a>
+        <a class="sidebar-link" id="sidebarCommunityMessagesLink" onclick="toggleSidebar(false); openJoaCommunityTab('messages');">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.15rem;">💬</span>
+            <span>Mensajería Privada</span>
+          </span>
+        </a>
+        <a class="sidebar-link" id="sidebarCommunityGroupsLink" onclick="toggleSidebar(false); openJoaCommunityTab('groups');">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.15rem;">🎮</span>
+            <span>Grupos de Jugadores</span>
+          </span>
+        </a>
+        <a class="sidebar-link" id="sidebarCommunityRewardsLink" onclick="toggleSidebar(false); openJoaRewardsModal();" style="background:linear-gradient(90deg, rgba(255,179,0,0.14) 0%, rgba(255,0,85,0.1) 100%); border:1px solid rgba(255,179,0,0.4); color:#FFD54F; font-weight:800; margin-top:4px;">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.15rem;">🎁</span>
+            <span>JOA Rewards & Regalos</span>
+          </span>
+          <span style="font-size:0.62rem; background:linear-gradient(135deg, #FFB300, #FF0055); color:#0A0304; padding:2px 7px; border-radius:6px; font-weight:900;">PREMIOS</span>
+        </a>
+        <a class="sidebar-link" id="sidebarCommunityNotifsLink" onclick="toggleSidebar(false); openJoaNotificationsModal();">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.15rem;">🔔</span>
+            <span>Notificaciones</span>
+          </span>
+        </a>
+      </nav>
       <div class="sidebar-section-label">Visítanos / Ubicación</div>
       <nav>
         <a class="sidebar-link" id="sidebarQuieroIrLink" onclick="toggleSidebar(false); openLocationModal();" style="background:linear-gradient(90deg, rgba(255,85,0,0.16) 0%, rgba(255,179,0,0.09) 100%); border:1.5px solid rgba(255,100,0,0.5); color:#FFAA33; font-weight:800; box-shadow:0 3px 14px rgba(255,69,0,0.22); margin-bottom:4px;">
@@ -319,63 +360,47 @@ setTimeout(function() {
       <div class="topbar" id="topbar">
         <button class="icon-btn mobile-menu-btn" id="menuToggleBtn" onclick="toggleSidebar(true)" title="Menú Principal">☰</button>
         
-        <!-- 🔍 BARRA DE BÚSQUEDA RÁPIDA EN TIEMPO REAL -->
-        <div class="topbar-search-wrap" id="topbarSearchWrap">
-          <span class="topbar-search-icon">🔍</span>
-          <input 
-            type="text" 
-            id="topbarQuickSearchInput" 
-            class="topbar-quick-search-input" 
-            placeholder="Buscar títulos, películas, series, juegos, consolas..." 
-            autocomplete="off" 
-            autocorrect="off"
-            spellcheck="false"
-            oninput="handleQuickCatalogSearch(this.value)"
-            onkeydown="if(event.key==='Escape') clearQuickCatalogSearch()"
-            aria-label="Buscar en el catálogo en tiempo real"
-          />
+        <div class="topbar-right-shortcuts" style="display:flex; align-items:center; gap:8px; margin-left:auto; flex-wrap:nowrap;">
+          <!-- 🌐 BOTÓN DE COMUNIDAD JOA MULTIVERSO -->
           <button 
             type="button" 
-            class="topbar-search-clear-btn" 
-            id="topbarQuickSearchClearBtn" 
-            onclick="clearQuickCatalogSearch()" 
-            title="Limpiar búsqueda" 
-            style="display:none;"
-          >✕</button>
-          <button 
-            type="button" 
-            class="topbar-search-voice-btn" 
-            id="topbarVoiceSearchBtn" 
-            onclick="startVoiceSearch()" 
-            title="Búsqueda por Voz (Dictar)"
+            class="topbar-community-btn" 
+            id="topbarCommunityBtn" 
+            onclick="openJoaCommunityModal()" 
+            title="Muro social de la comunidad JOA Multiverso" 
+            aria-label="Muro de la Comunidad"
           >
-            <span>🎙️</span>
+            <span class="topbar-community-icon">🌐</span>
+            <span class="topbar-community-txt">Comunidad</span>
           </button>
-          <button 
-            type="button" 
-            class="topbar-search-filter-btn" 
-            id="filterToggleBtn" 
-            onclick="toggleFiltersPanel()" 
-            title="Filtros y ordenación"
-          >
-            <span>🎛️</span>
-          </button>
-          <span class="topbar-search-count-badge" id="topbarSearchResultsBadge" title="Títulos disponibles" style="display:none;">0</span>
-        </div>
 
-        <!-- 🔲 CONMUTADOR DE VISTA EN ENCABEZADO (CUADRÍCULA VS LISTA COMPACTA) -->
-        <button 
-          type="button" 
-          class="topbar-view-mode-btn" 
-          id="headerViewModeToggleBtn" 
-          onclick="toggleHeaderViewMode()" 
-          title="Cambiar vista: Cuadrícula / Lista" 
-          aria-label="Alternar modo de vista entre cuadrícula y lista compacta"
-        >
-          <span id="headerViewModeIcon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          </span>
-        </button>
+          <!-- 🔔 NOTIFICACIONES SUPABASE (JOA MULTIVERSO) -->
+          <button 
+            type="button" 
+            class="topbar-notif-btn" 
+            id="topbarNotificationsBtn" 
+            onclick="openJoaNotificationsModal()" 
+            title="Notificaciones de JOA Multiverso" 
+            aria-label="Notificaciones"
+          >
+            <span class="topbar-notif-icon">🔔</span>
+            <span class="topbar-notif-txt">Avisos</span>
+            <span id="topbarNotifBadge" class="topbar-notif-badge" style="display:none;">0</span>
+          </button>
+
+          <!-- 👤 ACCESO / PERFIL DE CUENTA SUPABASE (JOA MULTIVERSO) -->
+          <button 
+            type="button" 
+            class="topbar-auth-btn" 
+            id="topbarAuthBtn" 
+            onclick="openJoaAuthModal()" 
+            title="Iniciar sesión en JOA Multiverso" 
+            aria-label="Iniciar sesión o ver perfil en JOA Multiverso"
+          >
+            <span class="topbar-auth-icon">👤</span>
+            <span class="topbar-auth-txt">Acceder</span>
+          </button>
+        </div>
       </div>
 
       <div class="filters-row" id="filtersRow">
@@ -441,6 +466,66 @@ setTimeout(function() {
         </div>
       </div>
 
+      <!-- ===== BARRA INFERIOR DE BÚSQUEDA Y CAMBIO DE VISTA (CUADRÍCULA / LISTA) ===== -->
+      <div class="bottom-search-view-bar" id="bottomSearchViewBar">
+        <!-- 🔍 BARRA DE BÚSQUEDA RÁPIDA EN TIEMPO REAL CON FILTROS Y VISTA -->
+        <div class="topbar-search-wrap" id="topbarSearchWrap">
+          <span class="topbar-search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="topbarQuickSearchInput" 
+            class="topbar-quick-search-input" 
+            placeholder="Buscar títulos, películas, series, juegos, consolas..." 
+            autocomplete="off" 
+            autocorrect="off"
+            spellcheck="false"
+            oninput="handleQuickCatalogSearch(this.value)"
+            onkeydown="if(event.key==='Escape') clearQuickCatalogSearch()"
+            aria-label="Buscar en el catálogo en tiempo real"
+          />
+          <button 
+            type="button" 
+            class="topbar-search-clear-btn" 
+            id="topbarQuickSearchClearBtn" 
+            onclick="clearQuickCatalogSearch()" 
+            title="Limpiar búsqueda" 
+            style="display:none;"
+          >✕</button>
+          <button 
+            type="button" 
+            class="topbar-search-voice-btn" 
+            id="topbarVoiceSearchBtn" 
+            onclick="startVoiceSearch()" 
+            title="Búsqueda por Voz (Dictar)"
+          >
+            <span>🎙️</span>
+          </button>
+          <button 
+            type="button" 
+            class="topbar-search-filter-btn" 
+            id="filterToggleBtn" 
+            onclick="toggleFiltersPanel()" 
+            title="Filtros y ordenación"
+          >
+            <span>🎛️</span>
+          </button>
+          <!-- 🔲 CONMUTADOR DE VISTA (CUADRÍCULA VS LISTA) DENTRO DEL BUSCADOR -->
+          <button 
+            type="button" 
+            class="topbar-view-mode-btn" 
+            id="headerViewModeToggleBtn" 
+            onclick="toggleHeaderViewMode()" 
+            title="Cambiar vista: Cuadrícula / Lista" 
+            aria-label="Alternar modo de vista entre cuadrícula y lista compacta"
+          >
+            <span id="headerViewModeIcon">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </span>
+          </button>
+          <span class="topbar-search-count-badge" id="topbarSearchResultsBadge" title="Títulos disponibles" style="display:none;">0</span>
+        </div>
+      </div>
+
       <!-- ===== 🎮 PANTALLA DE BIENVENIDA DESPEJADA CON EFECTOS DE LUCES ANIMADAS ===== -->
       <div id="mainWelcomeScreen" class="main-welcome-screen card-fade-in">
         <!-- Lienzo de fondo y orbes para animación de luces y efectos -->
@@ -457,7 +542,7 @@ setTimeout(function() {
 
           <div class="welcome-hero-badge">
             <span class="badge-icon">⚡</span> JOA GAMERS
-            <span class="home-apk-ver-pill" id="homeWelcomeApkVersionPill" onclick="openSettings()" title="Versión oficial instalada de la APK">v1.0.8</span>
+            <span class="home-apk-ver-pill" id="homeWelcomeApkVersionPill" onclick="openSettings()" title="Versión oficial instalada de la APK">v1.0.9</span>
           </div>
 
           <h2 class="welcome-hero-title">¡Bienvenido a tu Catálogo de Juegos y Películas!</h2>
@@ -469,7 +554,7 @@ setTimeout(function() {
               <span class="home-apk-icon">🚀</span>
               <div class="home-apk-text-group">
                 <span class="home-apk-tag">VERSIÓN DE LA APK INSTALADA</span>
-                <span class="home-apk-version-number" id="homeApkVersionNumber">v1.0.8 OFICIAL</span>
+                <span class="home-apk-version-number" id="homeApkVersionNumber">v1.0.9 OFICIAL</span>
               </div>
             </div>
             <div class="home-apk-version-right">
@@ -590,6 +675,9 @@ setTimeout(function() {
         <div style="display:flex; gap:8px; align-items:center; flex-shrink:0; flex-wrap:wrap;">
           <button id="addToCartDetailBtn" onclick="addCurrentItemToCartFromModal()" title="Añadir este título al carrito de compras" aria-label="Añadir al Carrito" style="background:linear-gradient(135deg, #00E5FF, #00FFB2); border:none; color:#04050A; border-radius:10px; padding:6px 14px; font-weight:800; font-size:0.85rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all .2s ease; white-space:nowrap; box-shadow:0 0 14px rgba(0,229,255,0.4);">
             <span>🛒</span><span>+ Carrito</span>
+          </button>
+          <button id="favoriteDetailBtn" class="btn btn-favorite-detail" onclick="toggleCurrentItemFavoriteFromModal()" title="Guardar en Favoritos de JOA Multiverso" aria-label="Favoritos">
+            <span id="favoriteDetailIcon">🤍</span><span id="favoriteDetailTxt">Favorito</span>
           </button>
           <button id="checkPcFromDetailBtn" onclick="checkCurrentGamePcCompatibility()" title="Verificar si este juego corre en mi PC con IA" aria-label="Verificar compatibilidad en mi PC" style="background:linear-gradient(135deg, rgba(0,255,178,0.22), rgba(0,229,255,0.22)); border:1px solid rgba(0,255,178,0.6); color:#00FFB2; border-radius:10px; padding:6px 14px; font-weight:800; font-size:0.85rem; cursor:pointer; display:none; align-items:center; gap:6px; transition:all .2s ease; white-space:nowrap; box-shadow:0 0 12px rgba(0,255,178,0.25);">
             <span>🖥️</span><span>¿Corre en mi PC?</span>
@@ -770,11 +858,14 @@ setTimeout(function() {
         </div>
       </div>
       <div class="review-box">
-        <h4>⭐ Tu reseña</h4>
+        <h4 style="display:flex; justify-content:space-between; align-items:center;">
+          <span>⭐ Tu reseña y valoración</span>
+          <span style="font-size:0.72rem; color:#00E5FF; font-weight:normal;">Sincronizado con JOA Multiverso</span>
+        </h4>
         <div class="star-picker" id="starPicker"></div>
-        <textarea id="reviewTextInput" placeholder="Escribe tu opinión (se guarda en este teléfono)..."></textarea>
-        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
-          <button class="btn btn-primary" onclick="saveMyReview()">💾 Guardar reseña</button>
+        <textarea id="reviewTextInput" placeholder="Escribe tu opinión sobre este título para la comunidad de JOA Multiverso..."></textarea>
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="saveReviewBtn" onclick="saveMyReviewUnified()">💾 Guardar y publicar reseña</button>
           <span class="review-saved-note" id="reviewSavedNote">✓ Guardada</span>
         </div>
       </div>
@@ -1309,7 +1400,7 @@ setTimeout(function() {
           <div class="settings-card-title" style="color:#00E5FF;display:flex;align-items:center;gap:8px;font-size:1rem;">
             <span>🚀 Actualización Global de la APK</span>
           </div>
-          <span id="apkUpdateSettingsBadge" style="background:rgba(0,229,255,0.18);color:#00E5FF;font-size:.7rem;padding:3px 10px;border-radius:10px;border:1px solid rgba(0,229,255,0.45);font-weight:800;">v1.0.8 Instalada</span>
+          <span id="apkUpdateSettingsBadge" style="background:rgba(0,229,255,0.18);color:#00E5FF;font-size:.7rem;padding:3px 10px;border-radius:10px;border:1px solid rgba(0,229,255,0.45);font-weight:800;">v1.0.9 Instalada</span>
         </div>
         <p class="settings-card-desc" style="color:var(--text2);">
           Detecta automáticamente si hay una nueva versión del archivo instalable APK de <b>JOA GAMERS</b> en la página oficial o en GitHub Releases, permitiéndote descargarla e instalarla sin tocar tu base de datos local.
@@ -1318,7 +1409,7 @@ setTimeout(function() {
         <div style="background:rgba(0,0,0,0.4);padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);margin-bottom:12px;font-size:0.8rem;line-height:1.5;box-sizing:border-box;width:100%;">
           <div style="display:flex;justify-content:space-between;margin-bottom:6px;gap:8px;align-items:center;">
             <span style="color:var(--text2);font-size:0.78rem;">Versión actual instalada:</span>
-            <b style="color:#fff;font-family:'JetBrains Mono',monospace;font-size:0.85rem;" id="settingsCurrentApkVer">v1.0.8</b>
+            <b style="color:#fff;font-family:'JetBrains Mono',monospace;font-size:0.85rem;" id="settingsCurrentApkVer">v1.0.9</b>
           </div>
           <div style="display:flex;justify-content:space-between;margin-bottom:6px;gap:8px;align-items:center;">
             <span style="color:var(--text2);font-size:0.78rem;">Última versión en servidor:</span>
@@ -2005,12 +2096,12 @@ setTimeout(function() {
       <div class="apk-version-compare-row">
         <div class="apk-ver-box apk-ver-current">
           <span class="apk-ver-label">Versión Instalada</span>
-          <span class="apk-ver-number" id="apkVersionActual">v1.0.8</span>
+          <span class="apk-ver-number" id="apkVersionActual">v1.0.9</span>
         </div>
         <div class="apk-ver-arrow">➔</div>
         <div class="apk-ver-box apk-ver-latest">
           <span class="apk-ver-label">Nueva Versión</span>
-          <span class="apk-ver-number" id="apkVersionNueva">v1.0.8</span>
+          <span class="apk-ver-number" id="apkVersionNueva">v1.0.9</span>
         </div>
       </div>
 
@@ -2075,7 +2166,7 @@ setTimeout(function() {
 <div class="floating-apk-update-pill" id="floatingApkUpdatePill" onclick="mostrarModalApkUpdate()" style="display:none;" title="Nueva versión de JOA GAMERs APK disponible">
   <div class="pill-dot-pulse"></div>
   <span class="pill-icon">🚀</span>
-  <span class="pill-text">Nueva APK <b id="pillApkVersion">v1.0.8</b></span>
+  <span class="pill-text">Nueva APK <b id="pillApkVersion">v1.0.9</b></span>
   <span class="pill-btn">Descargar</span>
 </div>
 
@@ -3306,6 +3397,14 @@ setTimeout(function() {
 <script src="catalog_data.js"></script>
 <script src="d3.min.js" onerror="this.onerror=null;this.src='https://d3js.org/d3.v7.min.js';"></script>
 <script src="jsqr.min.js"></script>
+<!-- 🌐 SUPABASE SDK & CLIENTE JOA MULTIVERSO -->
+<script src="supabase.js"></script>
+<script src="config.js"></script>
+<script src="joa_supabase_auth.js"></script>
+<script src="joa_supabase_sync.js"></script>
+<script src="joa_community_feed.js"></script>
+<script src="joa_social_messaging.js"></script>
+<script src="joa_rewards_notifications.js"></script>
 <script src="app1.js"></script>
 <script src="app2.js"></script>
 
@@ -3554,6 +3653,434 @@ setTimeout(function() {
         </button>
       </div>
       <input type="file" id="qrGalleryFileInput" accept="image/*" style="display:none;" onchange="handleQrGalleryFile(event)">
+    </div>
+  </div>
+</div>
+
+<!-- ===== 🌐 MODAL DE AUTENTICACIÓN SUPABASE (JOA MULTIVERSO) ===== -->
+<div class="modal-overlay" id="joaAuthModal" style="display:none;" onclick="if(event.target===this) closeJoaAuthModal()">
+  <div class="joa-auth-modal-box">
+    <button class="modal-close" onclick="closeJoaAuthModal()" aria-label="Cerrar modal" title="Cerrar modal" style="position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.08); border:none; color:#FFF; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">✕</button>
+    
+    <div class="joa-auth-header">
+      <div class="joa-auth-eyebrow">⚡ JOA MULTIVERSO UNIFICADO</div>
+      <h2 class="joa-auth-title" id="joaAuthModalTitle">Entra en tu <span class="hl-cyan">universo.</span></h2>
+      <p class="joa-auth-desc" id="joaAuthModalDesc">Inicia sesión con tu cuenta de JOA Multiverso para sincronizar favoritos y reseñas.</p>
+    </div>
+
+    <!-- Acceso Google OAuth -->
+    <button type="button" class="joa-oauth-btn" id="joaGoogleAuthBtn" onclick="handleJoaGoogleOAuth(false)">
+      <span class="joa-google-g">G</span>
+      <span>Continuar con Google</span>
+    </button>
+    <button type="button" class="joa-oauth-btn" id="joaSyncGoogleBtn" onclick="syncJoaOAuthSessionFromClipboard()" style="margin-top:6px; background:rgba(0,229,255,0.12); border:1px solid rgba(0,229,255,0.4); color:#00E5FF; font-size:0.84rem; font-weight:700;">
+      <span>📋</span>
+      <span>Sincronizar Google (Desde Portapapeles)</span>
+    </button>
+
+    <div class="joa-auth-divider">
+      <span>O con tu correo electrónico</span>
+    </div>
+
+    <!-- Formulario de autenticación correo / contraseña -->
+    <form class="joa-auth-form" id="joaAuthForm" onsubmit="handleJoaAuthSubmit(event)">
+      <div class="joa-auth-field">
+        <label for="joaAuthEmail" class="joa-auth-label">Correo electrónico</label>
+        <input type="email" id="joaAuthEmail" class="joa-auth-input" placeholder="tu@correo.com" required autocomplete="email">
+      </div>
+
+      <div class="joa-auth-field">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <label for="joaAuthPassword" class="joa-auth-label">Contraseña</label>
+          <button type="button" class="joa-auth-forgot-link" id="joaAuthForgotBtn" onclick="handleJoaForgotPass()">¿Olvidaste tu contraseña?</button>
+        </div>
+        <input type="password" id="joaAuthPassword" class="joa-auth-input" placeholder="Mínimo 6 caracteres" minlength="6" required autocomplete="current-password">
+      </div>
+
+      <div class="joa-auth-msg" id="joaAuthMsg"></div>
+
+      <button type="submit" class="joa-auth-submit-btn" id="joaAuthSubmitBtn">
+        <span>⚡ Iniciar Sesión</span>
+      </button>
+
+      <button type="button" class="joa-auth-switch-link" id="joaAuthSwitchBtn" onclick="toggleJoaAuthMode()">
+        ¿No tienes cuenta? Regístrate gratis
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== 👤 MODAL DE CUENTA / PERFIL ACTIVO SUPABASE ===== -->
+<div class="modal-overlay" id="joaAccountModal" style="display:none;" onclick="if(event.target===this) closeJoaAccountModal()">
+  <div class="joa-auth-modal-box">
+    <button class="modal-close" onclick="closeJoaAccountModal()" aria-label="Cerrar modal" title="Cerrar modal" style="position:absolute; top:14px; right:14px; background:rgba(255,255,255,0.08); border:none; color:#FFF; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">✕</button>
+    
+    <div class="joa-acc-hero">
+      <div class="joa-acc-avatar-box" id="joaAccAvatar">JOA</div>
+      <h3 class="joa-acc-name" id="joaAccDisplayName">Usuario JOA</h3>
+      <span class="joa-acc-badge">⚡ CUENTA JOA MULTIVERSO</span>
+    </div>
+
+    <div class="joa-acc-details-list">
+      <div class="joa-acc-detail-row">
+        <span class="joa-acc-detail-lbl">Usuario:</span>
+        <span class="joa-acc-detail-val" id="joaAccUsername">@usuario</span>
+      </div>
+      <div class="joa-acc-detail-row">
+        <span class="joa-acc-detail-lbl">Correo:</span>
+        <span class="joa-acc-detail-val" id="joaAccEmail">correo@ejemplo.com</span>
+      </div>
+      <div class="joa-acc-detail-row">
+        <span class="joa-acc-detail-lbl">Sincronización:</span>
+        <span class="joa-acc-detail-val" style="color:#00FFB2;">☁️ Supabase Cloud Activa</span>
+      </div>
+    </div>
+
+    <button type="button" class="joa-acc-logout-btn" onclick="joaSignOut()">
+      <span>🚪</span>
+      <span>Cerrar Sesión</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== 🌐 MODAL DE COMUNIDAD JOA MULTIVERSO (MURO, AMIGOS, CHATS, GRUPOS) ===== -->
+<div class="modal-overlay" id="joaCommunityModal" style="display:none;" onclick="if(event.target===this) closeJoaCommunityModal()">
+  <div class="joa-community-modal-box">
+    <!-- Header del Modal -->
+    <div class="joa-community-modal-header">
+      <div class="joa-community-header-left">
+        <h3 class="joa-community-title">
+          <span>🌐</span>
+          <span>Comunidad JOA Multiverso</span>
+        </h3>
+        <p class="joa-community-sub">Muro social, amigos, chats privados y grupos</p>
+      </div>
+      <div class="joa-community-header-actions">
+        <button class="modal-close" onclick="closeJoaCommunityModal()" aria-label="Cerrar modal" title="Cerrar" style="position:static; background:rgba(255,255,255,0.08); border:none; color:#FFF; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
+    </div>
+
+    <!-- Barra de Pestañas Cyberpunk -->
+    <div class="joa-comm-tabs-nav">
+      <button type="button" class="joa-comm-tab active" data-tab="feed" onclick="switchCommunityTab('feed')">
+        <span>🌐 Muro</span>
+      </button>
+      <button type="button" class="joa-comm-tab" data-tab="friends" onclick="switchCommunityTab('friends')">
+        <span>👥 Amigos</span>
+        <span id="joaPendingRequestsBadge" class="joa-comm-tab-badge" style="display:none;">0</span>
+      </button>
+      <button type="button" class="joa-comm-tab" data-tab="messages" onclick="switchCommunityTab('messages')">
+        <span>💬 Chats</span>
+      </button>
+      <button type="button" class="joa-comm-tab" data-tab="groups" onclick="switchCommunityTab('groups')">
+        <span>🎮 Grupos</span>
+      </button>
+    </div>
+
+    <!-- Cuerpo con scroll -->
+    <div class="joa-community-scroll-body">
+      
+      <!-- PESTAÑA 1: MURO SOCIAL -->
+      <div class="joa-tab-panel" id="joaTabPanel-feed" style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:0.8rem; color:#94A3B8; font-weight:700;">PUBLICACIONES RECIENTES</span>
+          <button type="button" class="joa-btn-refresh-feed" onclick="loadCommunityFeed()" title="Actualizar publicaciones">
+            <span>🔄 Actualizar</span>
+          </button>
+        </div>
+
+        <!-- Compositor de Nueva Publicación -->
+        <div class="joa-composer-card" id="joaCommunityComposer">
+          <div class="joa-composer-top">
+            <div class="joa-composer-avatar" id="joaComposerAvatar">JOA</div>
+            <span class="joa-composer-name" id="joaComposerName">Jugador JOA</span>
+          </div>
+          <form onsubmit="submitCommunityPost(event)" style="display:flex; flex-direction:column; gap:10px;">
+            <textarea id="joaCommunityPostBody" class="joa-composer-textarea" placeholder="¿Qué estás jugando, viendo o recomendando hoy? Comparte con la comunidad..." maxlength="3000" required></textarea>
+            <div class="joa-composer-bottom">
+              <span class="joa-composer-hint">Visible en la web y la app móvil de JOA</span>
+              <button type="submit" class="joa-composer-btn" id="joaCommunityPostBtn">
+                <span>🚀 Publicar</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Aviso para invitados -->
+        <div class="joa-guest-prompt-card" id="joaCommunityGuestPrompt" style="display:none;">
+          <div class="joa-guest-prompt-text">
+            <b>👋 ¿Quieres publicar, comentar y dar Me gusta?</b><br>
+            Inicia sesión con tu cuenta de JOA Multiverso para participar en la comunidad.
+          </div>
+          <button type="button" class="btn btn-primary" onclick="openJoaAuthModal()" style="padding:8px 16px; font-size:0.82rem; font-weight:800; border-radius:10px;">
+            <span>👤 Iniciar Sesión</span>
+          </button>
+        </div>
+
+        <!-- Lista dinámica de publicaciones -->
+        <div id="joaCommunityFeedList" style="display:flex; flex-direction:column; gap:14px;">
+          <p style="text-align:center; color:#94A3B8; font-size:0.85rem;">Cargando publicaciones...</p>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 2: AMIGOS & DIRECTORIO -->
+      <div class="joa-tab-panel" id="joaTabPanel-friends" style="display:none; flex-direction:column; gap:16px;">
+        <!-- Solicitudes Recibidas -->
+        <div id="joaPendingRequestsHost" style="display:none; flex-direction:column; gap:10px;"></div>
+
+        <!-- Mis Amigos -->
+        <div class="joa-social-section-card">
+          <div class="joa-social-section-head">
+            <h4><span>👥</span><span>Mis Amigos</span></h4>
+            <button type="button" class="joa-btn-mini-refresh" onclick="loadCommunityFriends()" title="Refrescar amigos">🔄</button>
+          </div>
+          <div id="joaFriendsListHost">
+            <p class="joa-loading-text">Cargando tus amigos...</p>
+          </div>
+        </div>
+
+        <!-- Explorar Jugadores / Directorio -->
+        <div class="joa-social-section-card">
+          <div class="joa-social-section-head">
+            <h4><span>🌐</span><span>Explorar Jugadores</span></h4>
+            <button type="button" class="joa-btn-mini-refresh" onclick="loadCommunityDirectory()" title="Refrescar directorio">🔄</button>
+          </div>
+          <div class="joa-search-bar-wrap">
+            <input type="text" id="joaDirectorySearchInput" class="joa-search-input" placeholder="🔍 Buscar por nombre, @usuario o juego..." oninput="renderCommunityDirectory()">
+          </div>
+          <div id="joaDirectoryListHost">
+            <p class="joa-loading-text">Cargando jugadores de la comunidad...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA 3: MENSAJERÍA PRIVADA (CHATS) -->
+      <div class="joa-tab-panel" id="joaTabPanel-messages" style="display:none; flex-direction:column; gap:14px;">
+        
+        <!-- VISTA A: Lista de Chats Activos -->
+        <div id="joaChatsListView" style="display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:0.82rem; color:#94A3B8; font-weight:700;">CHATS PRIVADOS DIRECTOS</span>
+            <button type="button" class="joa-btn-refresh-feed" onclick="loadCommunityChats()" title="Actualizar conversaciones">
+              <span>🔄 Actualizar</span>
+            </button>
+          </div>
+          <div id="joaChatListHost">
+            <p class="joa-loading-text">Cargando tus conversaciones...</p>
+          </div>
+        </div>
+
+        <!-- VISTA B: Ventana de Chat Activo -->
+        <div id="joaActiveChatView" class="joa-active-chat-container" style="display:none;">
+          <!-- Cabecera del Chat Activo -->
+          <div class="joa-active-chat-header">
+            <button type="button" class="joa-chat-back-btn" onclick="closeActiveChatWindow()" title="Volver a lista de chats">
+              <span>← Chats</span>
+            </button>
+            <div class="joa-chat-header-peer">
+              <div class="joa-user-mini-avatar" id="joaChatHeaderAvatar">JOA</div>
+              <div class="joa-chat-header-info">
+                <strong id="joaChatHeaderName">Amigo JOA</strong>
+                <small style="color:#00FFB2;">● Conversación cifrada en la nube</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contenedor con scroll de burbujas de mensaje -->
+          <div class="joa-chat-messages-area" id="joaChatMessagesHost">
+            <p class="joa-loading-text">Cargando mensajes...</p>
+          </div>
+
+          <!-- Compositor de Mensaje -->
+          <form onsubmit="sendActiveChatMessage(event)" class="joa-chat-composer-form">
+            <input type="text" id="joaChatMessageInput" class="joa-chat-input" placeholder="Escribe un mensaje privado..." maxlength="2000" autocomplete="off" required>
+            <button type="submit" id="joaChatMessageSubmitBtn" class="joa-chat-send-btn" title="Enviar mensaje">
+              <span>🚀</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- PESTAÑA 4: GRUPOS DE JUGADORES -->
+      <div class="joa-tab-panel" id="joaTabPanel-groups" style="display:none; flex-direction:column; gap:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <div>
+            <h4 style="margin:0; font-size:1rem; font-weight:900; color:#FFF;">🎮 Grupos de la Comunidad</h4>
+            <span style="font-size:0.75rem; color:#94A3B8;">Únete a clanes, torneos y comunidades por plataforma</span>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="joa-btn-toggle-new-group" onclick="toggleCreateGroupForm()">
+              <span>＋ Crear Grupo</span>
+            </button>
+            <button type="button" class="joa-btn-refresh-feed" onclick="loadCommunityGroups()" title="Refrescar grupos">
+              <span>🔄</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Formulario Crear Grupo (Colapsable) -->
+        <div id="joaCreateGroupFormWrap" class="joa-create-group-card" style="display:none;">
+          <div class="joa-create-group-head">
+            <h5>🛡️ Crear Nuevo Grupo de Jugadores</h5>
+            <button type="button" class="joa-btn-close-form" onclick="toggleCreateGroupForm(false)">✕</button>
+          </div>
+          <form onsubmit="submitNewCommunityGroup(event)" style="display:flex; flex-direction:column; gap:10px;">
+            <input type="text" id="joaNewGroupName" class="joa-form-input" placeholder="Nombre del Grupo (ej: Fans Resident Evil Cuba)" maxlength="60" required>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+              <select id="joaNewGroupCategory" class="joa-form-select">
+                <option value="General">Categoría: General</option>
+                <option value="Acción & Shooters">Acción & Shooters</option>
+                <option value="RPG & Aventura">RPG & Aventura</option>
+                <option value="Retro Gaming">Retro Gaming</option>
+                <option value="E-Sports & Competitivo">E-Sports</option>
+                <option value="Cine, Series & Anime">Cine & Series</option>
+              </select>
+              <select id="joaNewGroupPlatform" class="joa-form-select">
+                <option value="Todas">Plataforma: Todas</option>
+                <option value="PC Master Race">PC</option>
+                <option value="PlayStation">PlayStation</option>
+                <option value="Xbox">Xbox</option>
+                <option value="Nintendo Switch">Nintendo</option>
+                <option value="Android & Móvil">Android</option>
+              </select>
+            </div>
+            <textarea id="joaNewGroupDesc" class="joa-form-textarea" placeholder="Descripción breve del grupo, propósito y requisitos..." maxlength="500"></textarea>
+            <textarea id="joaNewGroupRules" class="joa-form-textarea" placeholder="Reglas de convivencia (ej: Respeto mutuo, no spam)..." maxlength="500" style="min-height:50px;"></textarea>
+            <div style="display:flex; justify-content:flex-end;">
+              <button type="submit" id="joaSubmitNewGroupBtn" class="btn btn-primary" style="padding:8px 20px; font-weight:800; border-radius:10px;">
+                <span>🚀 Crear Grupo</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista de Grupos -->
+        <div id="joaGroupsListHost">
+          <p class="joa-loading-text">Cargando grupos de la comunidad...</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== 🔔 MODAL DE CENTRO DE NOTIFICACIONES ===== -->
+<div class="modal-overlay" id="joaNotificationsModal" style="display:none;" onclick="if(event.target===this) closeJoaNotificationsModal()">
+  <div class="joa-community-modal-box" style="max-width:520px;">
+    <div class="joa-community-modal-header">
+      <div class="joa-community-header-left">
+        <h3 class="joa-community-title">
+          <span>🔔</span>
+          <span>Notificaciones</span>
+        </h3>
+        <p class="joa-community-sub">Avisos de regalos, amigos, chats y reseñas</p>
+      </div>
+      <div class="joa-community-header-actions">
+        <button type="button" class="joa-btn-mark-read" onclick="markAllNotificationsRead()" title="Marcar todas como leídas">
+          <span>✓ Marcar leídas</span>
+        </button>
+        <button class="modal-close" onclick="closeJoaNotificationsModal()" aria-label="Cerrar modal" title="Cerrar" style="position:static; background:rgba(255,255,255,0.08); border:none; color:#FFF; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
+    </div>
+    <div class="joa-community-scroll-body" style="padding:14px;">
+      <div id="joaNotificationsListHost">
+        <p class="joa-loading-text">Cargando notificaciones...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 🎁 MODAL PRINCIPAL DE JOA REWARDS & REGALOS ===== -->
+<div class="modal-overlay" id="joaRewardsModal" style="display:none;" onclick="if(event.target===this) closeJoaRewardsModal()">
+  <div class="joa-community-modal-box" style="max-width:640px;">
+    <div class="joa-community-modal-header">
+      <div class="joa-community-header-left">
+        <h3 class="joa-community-title" style="color:#FFD54F;">
+          <span>🎁</span>
+          <span>JOA Rewards & Regalos</span>
+        </h3>
+        <p class="joa-community-sub">Paquetes de juegos y productos digitales por servicios y méritos</p>
+      </div>
+      <div class="joa-community-header-actions">
+        <button type="button" class="joa-btn-refresh-feed" onclick="loadRewardCampaigns()" title="Actualizar recompensas">
+          <span>🔄</span>
+        </button>
+        <button class="modal-close" onclick="closeJoaRewardsModal()" aria-label="Cerrar modal" title="Cerrar" style="position:static; background:rgba(255,255,255,0.08); border:none; color:#FFF; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
+    </div>
+    <div class="joa-community-scroll-body" style="gap:20px;">
+      <!-- Banner informativo -->
+      <div class="joa-rewards-hero-card">
+        <div class="joa-rewards-hero-content">
+          <h4>🌟 ¡Consigue Juegos Gratis con tus Servicios!</h4>
+          <p>Al contratar cualquiera de nuestros servicios informáticos en <b>J.O.A GAMER's PC</b> o participar activamente en la comunidad, puedes reclamar paquetes de contenido digital elegidos directamente por ti del catálogo.</p>
+        </div>
+      </div>
+
+      <!-- Sección 1: Campañas de Recompensas Disponibles -->
+      <div>
+        <div class="joa-social-section-head" style="margin-bottom:12px;">
+          <h4 style="color:#FFF;"><span>🎁</span><span>Paquetes de Regalo Disponibles</span></h4>
+        </div>
+        <div id="joaRewardsCampaignsHost">
+          <p class="joa-loading-text">Cargando paquetes de recompensa...</p>
+        </div>
+      </div>
+
+      <!-- Sección 2: Mis Recompensas Solicitadas -->
+      <div class="joa-social-section-card" style="border-color:rgba(255,179,0,0.3);">
+        <div class="joa-social-section-head">
+          <h4 style="color:#FFD54F;"><span>📋</span><span>Mis Regalos y Recompensas Solicitadas</span></h4>
+        </div>
+        <div id="joaMyRewardClaimsHost">
+          <p class="joa-loading-text">Cargando tu historial...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 🎁 MODAL SELECTOR DE PRODUCTOS DEL CATÁLOGO PARA REGALOS ===== -->
+<div class="modal-overlay" id="joaServiceRewardPickerModal" style="display:none;" onclick="if(event.target===this) closeServiceRewardPicker()">
+  <div class="joa-community-modal-box" style="max-width:620px; max-height:94vh;">
+    <div class="joa-community-modal-header">
+      <div class="joa-community-header-left">
+        <h3 class="joa-community-title" style="color:#00FFB2;">
+          <span>🎁</span>
+          <span>Elige tus Productos de Regalo</span>
+        </h3>
+        <p class="joa-community-sub" id="joaPickerCampaignTitle">Selección para paquete de servicio</p>
+      </div>
+      <div class="joa-community-header-actions">
+        <button class="modal-close" onclick="closeServiceRewardPicker()" aria-label="Cerrar modal" title="Cerrar" style="position:static; background:rgba(255,255,255,0.08); border:none; color:#FFF; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
+    </div>
+
+    <!-- Barra de progreso de selección -->
+    <div class="joa-picker-progress-bar">
+      <span>Productos seleccionados: <strong id="joaPickerSelectedCount" style="color:#00FFB2;">0</strong> / <strong id="joaPickerTargetCount" style="color:#00E5FF;">3</strong></span>
+      <span style="font-size:0.75rem; color:#94A3B8;">Toca cada carátula para añadir o quitar</span>
+    </div>
+
+    <!-- Buscador de productos del catálogo -->
+    <div style="padding:10px 16px 0;">
+      <input type="text" id="joaPickerSearchInput" class="joa-search-input" placeholder="🔍 Buscar por título, género o tipo..." oninput="filterRewardPickerCatalog()">
+    </div>
+
+    <!-- Grid con scroll de productos -->
+    <div class="joa-community-scroll-body" style="padding:12px 16px;">
+      <div id="joaPickerCatalogGrid" class="joa-picker-grid">
+        <p class="joa-loading-text">Cargando catálogo...</p>
+      </div>
+    </div>
+
+    <!-- Footer con botón de confirmación -->
+    <div class="joa-picker-footer">
+      <button type="button" class="btn" onclick="closeServiceRewardPicker()" style="background:rgba(255,255,255,0.06); color:#FFF; border:1px solid rgba(255,255,255,0.15);">Cancelar</button>
+      <button type="button" id="joaPickerSubmitBtn" class="btn btn-primary" onclick="submitServiceRewardClaim()" disabled style="padding:10px 20px; font-weight:800; border-radius:10px;">
+        <span>🎁 Confirmar Selección y Reservar</span>
+      </button>
     </div>
   </div>
 </div>

@@ -76,10 +76,148 @@ self.addEventListener('activate', (event) => {
         })
       );
     }).then(() => {
+      runStorageObserverCleanup();
       return self.clients.claim();
     })
   );
 });
+
+// =====================================================================
+// 📊 OBSERVADOR DE ALMACENAMIENTO (STORAGE OBSERVER - LÍMITE 500MB & LIMPIEZA DE UNUSED/OLD IMAGES)
+// =====================================================================
+const STORAGE_LIMIT_BYTES = 500 * 1024 * 1024; // 500 MB
+
+async function openSWIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('joaCatalogOffline', 5);
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function getSWFavoritesSet(db) {
+  const favSet = new Set();
+  try {
+    if (db.objectStoreNames.contains('user_states')) {
+      await new Promise((resolve) => {
+        const tx = db.transaction('user_states', 'readonly');
+        const req = tx.objectStore('user_states').getAll();
+        req.onsuccess = () => {
+          (req.result || []).forEach(s => {
+            if (s && (s.status === 'wishlist' || s.status === 'playing' || s.isFavorite || s.status === 'favorite')) {
+              if (s.itemId) favSet.add(String(s.itemId).toLowerCase());
+            }
+          });
+          resolve();
+        };
+        req.onerror = () => resolve();
+      });
+    }
+  } catch(e) {}
+  return favSet;
+}
+
+async function runStorageObserverCleanup() {
+  try {
+    let usageBytes = 0;
+    if (self.navigator && self.navigator.storage && self.navigator.storage.estimate) {
+      try {
+        const estimate = await self.navigator.storage.estimate();
+        usageBytes = estimate.usage || 0;
+      } catch(e) {}
+    }
+
+    const db = await openSWIndexedDB();
+    if (!db || !db.objectStoreNames.contains('item_media_cache')) return;
+
+    const favSet = await getSWFavoritesSet(db);
+    const systemProtectedAssets = ['icon-', 'logo', 'favicon', 'placeholder', 'spinner', 'default', 'avatar', 'service_', 'joa_gamers', 'splash', 'img/', 'hero'];
+
+    const records = await new Promise((resolve) => {
+      const tx = db.transaction('item_media_cache', 'readonly');
+      const req = tx.objectStore('item_media_cache').getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    });
+
+    if (!records || !records.length) return;
+
+    const now = Date.now();
+    const toDeleteKeys = [];
+    let totalMediaBytes = 0;
+
+    records.forEach(rec => {
+      if (!rec || !rec.itemId) return;
+      const itemIdStr = String(rec.itemId).toLowerCase();
+      const isProtected = systemProtectedAssets.some(p => itemIdStr.includes(p));
+      if (isProtected) return;
+
+      const sizeBytes = rec.size || (rec.dataUrl ? Math.round(rec.dataUrl.length * 0.75) : 120 * 1024);
+      totalMediaBytes += sizeBytes;
+
+      const isFav = favSet.has(itemIdStr);
+      let ageDays = 31;
+      if (rec.savedAt) {
+        const diffMs = now - new Date(rec.savedAt).getTime();
+        if (!isNaN(diffMs) && diffMs > 0) ageDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      }
+
+      // Eliminar imágenes que tienen más de 30 días y NO son favoritas
+      if (ageDays >= 30 && !isFav) {
+        toDeleteKeys.push({ key: rec.itemId, size: sizeBytes });
+      }
+    });
+
+    // Observador de cuota: Si el uso de espacio supera los 500MB, purgar proactivamente imágenes no utilizadas/no favoritas
+    const effectiveUsage = Math.max(usageBytes, totalMediaBytes);
+    if (effectiveUsage > STORAGE_LIMIT_BYTES) {
+      console.log(`⚠️ [Storage Observer SW] El uso de almacenamiento (~${(effectiveUsage/(1024*1024)).toFixed(1)}MB) supera 500MB. Iniciando purga proactiva de caché de imágenes...`);
+      
+      const remainingUnfav = records.filter(rec => {
+        if (!rec || !rec.itemId) return false;
+        const itemIdStr = String(rec.itemId).toLowerCase();
+        const isProtected = systemProtectedAssets.some(p => itemIdStr.includes(p));
+        const isFav = favSet.has(itemIdStr);
+        const alreadyAdded = toDeleteKeys.some(k => k.key === rec.itemId);
+        return !isProtected && !isFav && !alreadyAdded;
+      }).sort((a, b) => {
+        const timeA = a.savedAt ? new Date(a.savedAt).getTime() : 0;
+        const timeB = b.savedAt ? new Date(b.savedAt).getTime() : 0;
+        return timeA - timeB;
+      });
+
+      let currentUsage = effectiveUsage - toDeleteKeys.reduce((acc, k) => acc + k.size, 0);
+      for (const rec of remainingUnfav) {
+        if (currentUsage <= STORAGE_LIMIT_BYTES * 0.85) break;
+        const sizeBytes = rec.size || (rec.dataUrl ? Math.round(rec.dataUrl.length * 0.75) : 120 * 1024);
+        toDeleteKeys.push({ key: rec.itemId, size: sizeBytes });
+        currentUsage -= sizeBytes;
+      }
+    }
+
+    if (toDeleteKeys.length > 0) {
+      const keysArray = toDeleteKeys.map(k => k.key);
+      await new Promise((resolve) => {
+        const tx = db.transaction('item_media_cache', 'readwrite');
+        const store = tx.objectStore('item_media_cache');
+        keysArray.forEach(k => store.delete(k));
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => resolve();
+      });
+
+      try {
+        const imgCache = await caches.open(CACHE_IMAGES);
+        for (const k of keysArray) {
+          await imgCache.delete(k);
+        }
+      } catch(e) {}
+
+      console.log(`🧹 [Storage Observer SW] Purga completada: ${toDeleteKeys.length} archivos eliminados de IndexedDB / CacheStorage.`);
+    }
+  } catch(err) {
+    console.warn('⚠️ [Storage Observer SW] Error en observador de almacenamiento:', err);
+  }
+}
 
 // Helper: Fetch con Timeout Inteligente (Previene bloqueos de red en conexiones 2G/3G inestables)
 function fetchWithTimeout(request, timeoutMs = 2500) {
@@ -485,6 +623,16 @@ self.addEventListener('message', (event) => {
         })()
       );
     }
+  }
+
+  if (data.type === 'CHECK_STORAGE_OBSERVER' || data.type === 'ENFORCE_STORAGE_LIMIT') {
+    event.waitUntil(
+      runStorageObserverCleanup().then(() => {
+        if (event.ports && event.ports[0]) {
+          event.ports[0].postMessage({ success: true });
+        }
+      })
+    );
   }
 
   if (data.type === 'GET_OFFLINE_STATS') {

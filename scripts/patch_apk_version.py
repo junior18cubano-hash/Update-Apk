@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys, os, struct, zipfile, subprocess, tempfile
 
-def patch_manifest(apk_path, version_name="1.0.8", version_code=8):
+def patch_manifest(apk_path, version_name="1.0.9", version_code=9):
     if not os.path.exists(apk_path):
         print(f"File not found: {apk_path}")
         return False
@@ -18,7 +18,7 @@ def patch_manifest(apk_path, version_name="1.0.8", version_code=8):
         str_abs = 8 + strings_start + off
         length = struct.unpack_from('<H', manifest_data, str_abs)[0]
         val = manifest_data[str_abs+2 : str_abs+2 + length*2].decode('utf-16le')
-        if val in ["1.0", "1.0.4", "1.0.5", "1.0.6", "1.0.7", "1.0.8"]:
+        if val in ["1.0", "1.0.4", "1.0.5", "1.0.6", "1.0.7", "1.0.8", "1.0.9"]:
             version_str_idx = i
         strings.append(val)
 
@@ -75,6 +75,6 @@ def patch_manifest(apk_path, version_name="1.0.8", version_code=8):
 
 if __name__ == '__main__':
     target = sys.argv[1] if len(sys.argv) > 1 else ".build-outputs/app-debug.apk"
-    ver = sys.argv[2] if len(sys.argv) > 2 else "1.0.8"
-    code = int(sys.argv[3]) if len(sys.argv) > 3 else 8
+    ver = sys.argv[2] if len(sys.argv) > 2 else "1.0.9"
+    code = int(sys.argv[3]) if len(sys.argv) > 3 else 9
     patch_manifest(target, ver, code)
