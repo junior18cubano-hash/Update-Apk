@@ -38,10 +38,25 @@ public class JoaAuthHandler {
             return true; // Handled! Do NOT open external browser or load github.io website!
         }
 
-        // 2. Allow OAuth authentication URLs to load INSIDE the WebView
+        // Google identity pages are opened in the system browser, never in WebView.
+        if (isGoogleIdentityUrl(url)) {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                if (!(context instanceof Activity)) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                Log.i(TAG, "Opened Google identity flow in system browser");
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "Could not open Google in external browser", e);
+                return true;
+            }
+        }
+
+        // Keep the Supabase authorize endpoint in this WebView so its PKCE verifier
+        // remains available when the app receives the deep-link callback.
         if (isAuthFlowUrl(url)) {
-            Log.d(TAG, "Allowing in-app navigation for auth URL: " + url);
-            return false; // Load inside WebView
+            Log.d(TAG, "Allowing Supabase OAuth bootstrap in WebView: " + url);
+            return false;
         }
 
         // 3. Local file URLs and YouTube embeds load in webview
@@ -97,7 +112,6 @@ public class JoaAuthHandler {
             String pending = JoaSecureStorage.getPendingCallback(context);
             if (pending != null && !pending.isEmpty()) {
                 Log.i(TAG, "Delivering pending auth callback on page finished");
-                JoaSecureStorage.clearPendingCallback(context);
                 if (view != null) {
                     final String targetUrl = pending;
                     view.post(new Runnable() {
@@ -187,25 +201,45 @@ public class JoaAuthHandler {
 
     public static boolean isAuthCallback(String url) {
         if (url == null) return false;
-        boolean isCallbackHost = url.contains("junior18cubano-hash.github.io");
-        boolean hasAuthTokens = url.contains("access_token=") || url.contains("refresh_token=") || url.contains("code=") || url.contains("error_description=");
-        return isCallbackHost || hasAuthTokens;
+        try {
+            Uri uri = Uri.parse(url);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            if (("joacatalogo".equalsIgnoreCase(scheme) || "joagamers".equalsIgnoreCase(scheme))
+                    && "auth".equalsIgnoreCase(host)) return true;
+
+            boolean legacyHost = "junior18cubano-hash.github.io".equalsIgnoreCase(host);
+            boolean legacyPath = uri.getPath() != null && uri.getPath().startsWith("/mi-catalogo");
+            boolean hasOAuthResult = uri.getQueryParameter("code") != null
+                    || uri.getQueryParameter("access_token") != null
+                    || uri.getQueryParameter("error") != null
+                    || uri.getQueryParameter("error_description") != null
+                    || url.contains("access_token=") || url.contains("code=");
+            return legacyHost && legacyPath && hasOAuthResult;
+        } catch (Exception e) { return false; }
+    }
+
+    private static boolean isGoogleIdentityUrl(String url) {
+        if (url == null) return false;
+        try {
+            Uri uri = Uri.parse(url);
+            String host = uri.getHost();
+            if (host == null) return false;
+            host = host.toLowerCase(java.util.Locale.ROOT);
+            String path = uri.getPath() == null ? "" : uri.getPath();
+            return "accounts.google.com".equals(host) || host.endsWith(".accounts.google.com")
+                    || "consent.google.com".equals(host)
+                    || ("www.google.com".equals(host) && (path.startsWith("/signin") || path.startsWith("/oauth")));
+        } catch (Exception e) { return false; }
     }
 
     public static boolean isAuthFlowUrl(String url) {
         if (url == null) return false;
-        return url.contains("accounts.google.com") ||
-               url.contains("accounts.youtube.com") ||
-               url.contains("apis.google.com") ||
-               url.contains("ssl.gstatic.com") ||
-               url.contains("gstatic.com") ||
-               url.contains("google.com/signin") ||
-               url.contains("google.com/accounts") ||
-               url.contains("google.com/oauth") ||
-               url.contains("googleusercontent.com") ||
-               url.contains("googleapis.com") ||
-               url.contains("dezyngtzzblzqmofesxg.supabase.co") ||
-               url.contains("supabase.co");
+        try {
+            String host = Uri.parse(url).getHost();
+            return host != null && (host.equalsIgnoreCase("supabase.co")
+                    || host.toLowerCase(java.util.Locale.ROOT).endsWith(".supabase.co"));
+        } catch (Exception e) { return false; }
     }
 
     private static String extractHash(String url) {
